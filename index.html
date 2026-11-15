@@ -203,11 +203,31 @@
                 <span>Playground</span>
             </button>
 
-            <!-- Star Counter Pill -->
-            <div class="flex items-center gap-2 bg-amber-100 border-2 border-amber-300 px-4 py-1.5 rounded-2xl shadow-inner">
-                <span class="text-2xl">⭐</span>
-                <span id="star-count" class="font-display font-bold text-xl text-amber-700">0</span>
-                <span class="hidden sm:inline text-sm font-extrabold text-amber-700 uppercase tracking-wide">Stars</span>
+            <!-- Star Counter & Sticker Progress Pill -->
+            <div class="flex flex-wrap items-center gap-2">
+                <div class="flex items-center gap-2 bg-amber-100 border-2 border-amber-300 px-3.5 py-1.5 rounded-2xl shadow-inner">
+                    <span class="text-xl sm:text-2xl">⭐</span>
+                    <span id="star-count" class="font-display font-bold text-lg sm:text-xl text-amber-700">0</span>
+                    <span class="hidden md:inline text-xs font-extrabold text-amber-700 uppercase tracking-wide">Stars</span>
+                </div>
+
+                <!-- Next Sticker Progress Bar -->
+                <div class="flex items-center gap-2 bg-emerald-50 border-2 border-emerald-300 px-3 py-1.5 rounded-2xl">
+                    <span class="text-base sm:text-lg">🦖</span>
+                    <div class="flex flex-col">
+                        <span id="next-sticker-label" class="text-[11px] font-extrabold text-emerald-800 uppercase leading-none mb-1">Next Sticker: 0 / 5</span>
+                        <div class="w-20 sm:w-24 h-2.5 bg-emerald-200 rounded-full overflow-hidden">
+                            <div id="next-sticker-bar" class="h-full bg-gradient-to-r from-emerald-400 to-teal-500 transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sticker Book Button -->
+                <button onclick="openStickerBook()" class="btn-toy btn-tangerine px-3.5 sm:px-4 py-2 rounded-2xl font-display font-bold text-sm sm:text-base flex items-center gap-1.5">
+                    <span class="text-lg">🦕</span>
+                    <span>Sticker Book</span>
+                    <span id="sticker-badge" class="bg-white text-orange-700 font-extrabold text-xs px-2 py-0.5 rounded-full shadow-sm">0/19</span>
+                </button>
             </div>
 
             <!-- Voice & Sound Controls -->
@@ -233,6 +253,34 @@
         <div id="helper-toast-inner" class="bg-white border-4 border-amber-400 border-b-8 rounded-3xl px-6 py-3 shadow-2xl flex items-center gap-3 max-w-md">
             <span id="toast-emoji" class="text-3xl">🌟</span>
             <p id="toast-text" class="font-display font-bold text-lg text-slate-800">Great job!</p>
+        </div>
+    </div>
+
+    <!-- Celebratory Sticker Unlock Modal (Appears every 5 stars!) -->
+    <div id="sticker-unlock-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-sky-900/60 backdrop-blur-sm p-4">
+        <div class="animate-pop bg-gradient-to-b from-amber-50 via-white to-emerald-50 border-4 border-amber-400 border-b-8 rounded-3xl max-w-md w-full p-6 sm:p-7 text-center shadow-2xl space-y-4 relative overflow-hidden">
+            <div class="inline-block bg-amber-200 text-amber-900 font-extrabold text-xs uppercase tracking-wider px-4 py-1 rounded-full">
+                🎉 5 Stars Earned! New Sticker! 🎉
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-emerald-700">Sticker Unlocked!</h2>
+            <div id="modal-sticker-art" class="w-36 h-36 mx-auto bg-white rounded-3xl border-4 border-emerald-300 shadow-lg flex items-center justify-center p-3 animate-float-1">
+                <!-- Unlocked SVG injected here -->
+            </div>
+            <div class="space-y-1">
+                <h3 id="modal-sticker-name" class="text-2xl font-extrabold text-slate-800">T-Rex</h3>
+                <p id="modal-sticker-fact" class="text-base font-bold text-slate-600 px-2">Roar! T-Rex had tiny arms and super strong legs!</p>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-3 pt-2 justify-center">
+                <button onclick="speakModalStickerFact()" class="btn-toy btn-sunny px-5 py-3 rounded-2xl font-display font-bold text-base flex items-center justify-center gap-2">
+                    <span>🔊</span> Hear Fun Fact
+                </button>
+                <button onclick="closeUnlockModal(true)" class="btn-toy btn-tangerine px-5 py-3 rounded-2xl font-display font-bold text-base flex items-center justify-center gap-2">
+                    <span>🦕</span> See Sticker Book
+                </button>
+                <button onclick="closeUnlockModal(false)" class="btn-toy btn-mint px-5 py-3 rounded-2xl font-display font-bold text-base flex items-center justify-center gap-2">
+                    <span>Keep Playing!</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -362,11 +410,21 @@
                 // Soft, warm two-note marimba-like nudge (never harsh)
                 this.playTone(392.00, 'sine', 0.2, 0.00, 0.14); // G4
                 this.playTone(349.23, 'sine', 0.25, 0.16, 0.14); // F4
+            },
+
+            playStickerFanfare() {
+                // Exciting celebratory fanfare when unlocking a dinosaur/snake/spider sticker
+                this.playTone(523.25, 'triangle', 0.14, 0.00, 0.22); // C5
+                this.playTone(659.25, 'triangle', 0.14, 0.12, 0.22); // E5
+                this.playTone(783.99, 'triangle', 0.14, 0.24, 0.22); // G5
+                this.playTone(1046.50, 'triangle', 0.22, 0.36, 0.25); // C6
+                this.playTone(783.99, 'triangle', 0.14, 0.56, 0.20); // G5
+                this.playTone(1046.50, 'triangle', 0.45, 0.70, 0.28); // C6
             }
         };
 
         /* =========================================================================
-           2. CUSTOM CUTE SVG CHARACTER FACES & SCENE ILLUSTRATIONS
+           2. CUSTOM CUTE SVG CHARACTER FACES & STICKER ARTWORK
            ========================================================================= */
         function getCharacterSVG(emotion, bgColor = '#FEF3C7') {
             const faces = {
@@ -460,12 +518,212 @@
             `;
         }
 
-        /* =========================================================================
-           3. RICH EDUCATIONAL DATASETS (46 UNIQUE ACTIVITIES ACROSS 4 MODES)
-           ========================================================================= */
+        // Custom vibrant SVG artwork for the 19 Dinosaurs, Snakes & Spiders Stickers
+        function getStickerSVG(id, locked = false) {
+            const art = {
+                // --- DINOSAURS (7) ---
+                trex: `<svg viewBox="0 0 120 120" class="w-full h-full">
+                    <path d="M25 82 Q15 70 28 65 L45 62 L52 30 Q68 18 92 26 Q104 34 96 46 L78 48 L74 68 L84 96 L72 96 L66 76 L54 76 L50 96 L38 96 L44 74 Z" fill="#22C55E" stroke="#15803D" stroke-width="4" stroke-linejoin="round"/>
+                    <path d="M76 42 L82 47 L88 42 L94 46" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="80" cy="31" r="4" fill="#FFFFFF"/><circle cx="81" cy="31" r="2" fill="#1E293B"/>
+                    <path d="M68 56 L78 58 L75 63" fill="none" stroke="#15803D" stroke-width="3.5" stroke-linecap="round"/>
+                </svg>`,
+                triceratops: `<svg viewBox="0 0 120 120" class="w-full h-full">
+                    <path d="M18 76 Q14 54 38 50 L62 46 Q68 24 84 32 Q94 42 86 58 L96 68 L82 78 L80 96 L68 96 L66 80 L44 80 L40 96 L28 96 L30 78 Z" fill="#F97316" stroke="#C2410C" stroke-width="4" stroke-linejoin="round"/>
+                    <path d="M84 44 L106 36 L88 52 Z" fill="#FEF08A" stroke="#CA8A04" stroke-width="2.5"/>
+                    <path d="M86 54 L108 52 L88 60 Z" fill="#FEF08A" stroke="#CA8A04" stroke-width="2.5"/>
+                    <circle cx="78" cy="48" r="4" fill="#FFFFFF"/><circle cx="79" cy="48" r="2" fill="#1E293B"/>
+                </svg>`,
+                stegosaurus: `<svg viewBox="0 0 120 120" class="w-full h-full">
+                    <polygon points="34,52 42,32 50,50" fill="#FACC15" stroke="#CA8A04" stroke-width="3"/>
+                    <polygon points="50,48 60,24 70,48" fill="#FACC15" stroke="#CA8A04" stroke-width="3"/>
+                    <polygon points="68,52 78,32 86,54" fill="#FACC15" stroke="#CA8A04" stroke-width="3"/>
+                    <path d="M16 74 L30 62 Q60 42 88 62 L102 68 Q106 76 96 80 L84 80 L82 96 L70 96 L68 82 L46 82 L42 96 L30 96 L32 78 Z" fill="#06B6D4" stroke="#0E7490" stroke-width="4" stroke-linejoin="round"/>
+                    <circle cx="94" cy="68" r="3.5" fill="#FFFFFF"/><circle cx="95" cy="68" r="1.8" fill="#1E293B"/>
+                </svg>`,
+                brachiosaurus: `<svg viewBox="0 0 120 120" class="w-full h-full">
+                    <path d="M18 88 Q32 74 52 72 L68 24 Q74 14 90 18 Q98 24 90 32 L78 32 L72 78 L72 98 L60 98 L58 84 L42 84 L38 98 L26 98 L28 86 Z" fill="#A855F7" stroke="#7E22CE" stroke-width="4" stroke-linejoin="round"/>
+                    <circle cx="52" cy="78" r="4" fill="#E9D5FF"/><circle cx="62" cy="64" r="3.5" fill="#E9D5FF"/>
+                    <circle cx="84" cy="23" r="3.5" fill="#FFFFFF"/><circle cx="85" cy="23" r="1.8" fill="#1E293B"/>
+                </svg>`,
+                velociraptor: `<svg viewBox="0 0 120 120" class="w-full h-full">
+                    <path d="M14 66 L46 58 L64 34 Q82 26 98 34 Q102 42 90 46 L74 46 L68 66 L78 94 L66 94 L60 74 L48 76 L42 94 L32 94 L42 70 Z" fill="#EF4444" stroke="#B91C1C" stroke-width="4" stroke-linejoin="round"/>
+                    <path d="M48 62 L58 60 L66 56" stroke="#FDE047" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    <circle cx="84" cy="36" r="3.5" fill="#FFFFFF"/><circle cx="85" cy="36" r="1.8" fill="#1E293B"/>
+                </svg>`,
+                pterodactyl: `<svg viewBox="0 0 120 120" class="w-full h-full">
+                    <path d="M12 46 Q42 36 58 54 L66 36 L108 52 L74 60 L106 76 Q76 88 58 72 L24 92 L44 64 Z" fill="#EC4899" stroke="#BE185D" stroke-width="4" stroke-linejoin="round"/>
+                    <circle cx="76" cy="51" r="3.5" fill="#FFFFFF"/><circle cx="77" cy="51" r="1.8" fill="#1E293B"/>
+                </svg>`,
+                dinoegg: `<svg viewBox="0 0 120 120" class="w-full h-full">
+                    <path d="M42 54 Q46 28 60 28 Q74 28 78 54 Z" fill="#4ADE80" stroke="#15803D" stroke-width="3.5"/>
+                    <circle cx="53" cy="40" r="3.5" fill="#FFFFFF"/><circle cx="54" cy="40" r="1.8" fill="#1E293B"/>
+                    <circle cx="67" cy="40" r="3.5" fill="#FFFFFF"/><circle cx="68" cy="40" r="1.8" fill="#1E293B"/>
+                    <path d="M32 62 L44 54 L54 64 L66 54 L76 64 L88 56 Q94 96 60 98 Q26 96 32 62 Z" fill="#FEF9C3" stroke="#EAB308" stroke-width="4" stroke-linejoin="round"/>
+                    <circle cx="48" cy="78" r="5" fill="#38BDF8"/><circle cx="70" cy="82" r="6" fill="#FB7185"/>
+                </svg>`,
 
-        // MODE 1: "Because" Bridge (16 Scenarios)
+                // --- SNAKES (6) ---
+                python: `<svg viewBox="0 0 120 120" class="w-full h-full">
+                    <path d="M26 88 C26 70, 94 70, 94 56 C94 42, 32 46, 32 32 C32 22, 64 20, 76 28" fill="none" stroke="#22C55E" stroke-width="14" stroke-linecap="round"/>
+                    <path d="M26 88 C26 70, 94 70, 94 56 C94 42, 32 46, 32 32 C32 22, 64 20, 76 28" fill="none" stroke="#86EFAC" stroke-width="5" stroke-dasharray="6 10" stroke-linecap="round"/>
+                    <ellipse cx="82" cy="28" rx="13" ry="10" fill="#16A34A" stroke="#14532D" stroke-width="3"/>
+                    <path d="M95 28 L106 24 M95 28 L106 32" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="84" cy="25" r="3" fill="#FFFFFF"/><circle cx="85" cy="25" r="1.5" fill="#1E293B"/>
+                </svg>`,
+                cobra: `<svg viewBox="0 0 120 120" class="w-full h-full">
+                    <path d="M28 94 Q60 98 90 92 Q72 82 54 84 L58 58" fill="none" stroke="#F59E0B" stroke-width="12" stroke-linecap="round"/>
+                    <path d="M40 58 Q34 26 60 22 Q86 26 80 58 Q60 66 40 58 Z" fill="#FBBF24" stroke="#B45309" stroke-width="4"/>
+                    <circle cx="52" cy="36" r="4" fill="#FFFFFF"/><circle cx="52" cy="36" r="2" fill="#1E293B"/>
+                    <circle cx="68" cy="36" r="4" fill="#FFFFFF"/><circle cx="68" cy="36" r="2" fill="#1E293B"/>
+                    <path d="M60 46 L60 56 L56 60 M60 56 L64 60" stroke="#EF4444" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                </svg>`,
+                rainbowboa: `<svg viewBox="0 0 120 120" class="w-full h-full">
+                    <path d="M24 84 Q42 54 62 76 T96 42" fill="none" stroke="#EC4899" stroke-width="15" stroke-linecap="round"/>
+                    <path d="M24 84 Q42 54 62 76 T96 42" fill="none" stroke="#38BDF8" stroke-width="8" stroke-dasharray="8 8" stroke-linecap="round"/>
+                    <circle cx="96" cy="40" r="11" fill="#A855F7" stroke="#6B21A8" stroke-width="3"/>
+                    <circle cx="98" cy="37" r="3" fill="#FFFFFF"/><circle cx="99" cy="37" r="1.5" fill="#1E293B"/>
+                    <path d="M106 42 L114 39 M106 42 L114 45" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>`,
+                coralsnake: `<svg viewBox="0 0 120 120" class="w-full h-full">
+                    <path d="M22 76 C36 42, 62 94, 82 52 C88 38, 94 34, 98 34" fill="none" stroke="#EF4444" stroke-width="14" stroke-linecap="round"/>
+                    <path d="M22 76 C36 42, 62 94, 82 52" fill="none" stroke="#FACC15" stroke-width="14" stroke-dasharray="6 14" stroke-linecap="round"/>
+                    <circle cx="98" cy="34" r="10" fill="#EF4444" stroke="#991B1B" stroke-width="3"/>
+                    <circle cx="99" cy="31" r="3" fill="#FFFFFF"/><circle cx="100" cy="31" r="1.5" fill="#1E293B"/>
+                </svg>`,
+                gardensnake: `<svg viewBox="0 0 120 120" class="w-full h-full">
+                    <path d="M20 82 Q52 92 66 66 T94 46" fill="none" stroke="#10B981" stroke-width="13" stroke-linecap="round"/>
+                    <path d="M20 82 Q52 92 66 66 T94 46" fill="none" stroke="#FEF08A" stroke-width="3.5" stroke-linecap="round"/>
+                    <circle cx="94" cy="44" r="11" fill="#059669" stroke="#065F46" stroke-width="3"/>
+                    <circle cx="96" cy="41" r="3.5" fill="#FFFFFF"/><circle cx="97" cy="41" r="1.8" fill="#1E293B"/>
+                    <path d="M92 48 Q96 52 100 48" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round"/>
+                </svg>`,
+                rattlesnake: `<svg viewBox="0 0 120 120" class="w-full h-full">
+                    <path d="M26 42 L26 68 Q26 88 58 88 Q88 88 86 64 Q84 44 64 46" fill="none" stroke="#D97706" stroke-width="13" stroke-linecap="round"/>
+                    <ellipse cx="26" cy="30" rx="5" ry="9" fill="#FDE047" stroke="#B45309" stroke-width="2.5"/>
+                    <circle cx="62" cy="46" r="11" fill="#B45309" stroke="#78350F" stroke-width="3"/>
+                    <circle cx="60" cy="43" r="3" fill="#FFFFFF"/><circle cx="59" cy="43" r="1.5" fill="#1E293B"/>
+                </svg>`,
+
+                // --- SPIDERS (6) ---
+                jumpingspider: `<svg viewBox="0 0 120 120" class="w-full h-full">
+                    <path d="M38 64 L16 48 M36 72 L14 68 M38 80 L18 88 M82 64 L104 48 M84 72 L106 68 M82 80 L102 88" stroke="#3B82F6" stroke-width="5" stroke-linecap="round"/>
+                    <circle cx="60" cy="70" r="24" fill="#60A5FA" stroke="#1D4ED8" stroke-width="4"/>
+                    <circle cx="51" cy="66" r="7" fill="#FFFFFF"/><circle cx="52" cy="66" r="3.5" fill="#1E293B"/>
+                    <circle cx="69" cy="66" r="7" fill="#FFFFFF"/><circle cx="68" cy="66" r="3.5" fill="#1E293B"/>
+                    <circle cx="40" cy="64" r="3.5" fill="#FFFFFF"/><circle cx="80" cy="64" r="3.5" fill="#FFFFFF"/>
+                    <path d="M53 78 Q60 84 67 78" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round"/>
+                </svg>`,
+                tarantula: `<svg viewBox="0 0 120 120" class="w-full h-full">
+                    <path d="M40 58 L16 38 L10 54 M38 68 L12 62 L8 78 M42 78 L18 86 L16 100 M80 58 L104 38 L110 54 M82 68 L108 62 L112 78 M78 78 L102 86 L104 100" stroke="#92400E" stroke-width="5.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    <ellipse cx="60" cy="46" rx="16" ry="14" fill="#B45309" stroke="#78350F" stroke-width="3.5"/>
+                    <ellipse cx="60" cy="74" rx="22" ry="20" fill="#D97706" stroke="#78350F" stroke-width="4"/>
+                    <circle cx="54" cy="42" r="3.5" fill="#FFFFFF"/><circle cx="66" cy="42" r="3.5" fill="#FFFFFF"/>
+                </svg>`,
+                orbweaver: `<svg viewBox="0 0 120 120" class="w-full h-full">
+                    <circle cx="60" cy="60" r="46" fill="none" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="5 5"/>
+                    <path d="M60 14 L60 106 M14 60 L106 60 M26 26 L94 94 M94 26 L26 94" stroke="#CBD5E1" stroke-width="2"/>
+                    <path d="M42 56 L22 42 M40 66 L20 66 M44 74 L24 88 M78 56 L98 42 M80 66 L100 66 M76 74 L96 88" stroke="#7C3AED" stroke-width="4.5" stroke-linecap="round"/>
+                    <circle cx="60" cy="66" r="20" fill="#FACC15" stroke="#7C3AED" stroke-width="4"/>
+                    <circle cx="53" cy="62" r="4" fill="#FFFFFF"/><circle cx="53" cy="62" r="2" fill="#1E293B"/>
+                    <circle cx="67" cy="62" r="4" fill="#FFFFFF"/><circle cx="67" cy="62" r="2" fill="#1E293B"/>
+                </svg>`,
+                spinyspider: `<svg viewBox="0 0 120 120" class="w-full h-full">
+                    <path d="M42 62 L20 48 M40 72 L18 72 M78 62 L100 48 M80 72 L102 72" stroke="#DC2626" stroke-width="4.5" stroke-linecap="round"/>
+                    <polygon points="60,34 68,48 86,44 78,60 90,74 72,78 60,92 48,78 30,74 42,60 34,44 52,48" fill="#FFFFFF" stroke="#DC2626" stroke-width="4" stroke-linejoin="round"/>
+                    <circle cx="53" cy="62" r="4" fill="#EF4444"/><circle cx="67" cy="62" r="4" fill="#EF4444"/>
+                    <path d="M54 72 Q60 77 66 72" stroke="#DC2626" stroke-width="3" fill="none" stroke-linecap="round"/>
+                </svg>`,
+                goldenspider: `<svg viewBox="0 0 120 120" class="w-full h-full">
+                    <path d="M44 54 L22 34 M42 66 L18 64 M44 78 L22 94 M76 54 L98 34 M78 66 L102 64 M76 78 L98 94" stroke="#D97706" stroke-width="4.5" stroke-linecap="round"/>
+                    <ellipse cx="60" cy="68" rx="16" ry="24" fill="#FDE047" stroke="#CA8A04" stroke-width="4"/>
+                    <circle cx="60" cy="42" r="11" fill="#F59E0B" stroke="#B45309" stroke-width="3"/>
+                    <circle cx="56" cy="40" r="3" fill="#FFFFFF"/><circle cx="64" cy="40" r="3" fill="#FFFFFF"/>
+                </svg>`,
+                ladybugspider: `<svg viewBox="0 0 120 120" class="w-full h-full">
+                    <path d="M40 60 L20 46 M38 70 L18 70 M42 80 L22 92 M80 60 L100 46 M82 70 L102 70 M78 80 L98 92" stroke="#EC4899" stroke-width="4.5" stroke-linecap="round"/>
+                    <circle cx="60" cy="68" r="22" fill="#F43F5E" stroke="#9F1239" stroke-width="4"/>
+                    <circle cx="50" cy="74" r="3.5" fill="#FEF08A"/><circle cx="70" cy="74" r="3.5" fill="#FEF08A"/><circle cx="60" cy="82" r="3.5" fill="#FEF08A"/>
+                    <circle cx="52" cy="60" r="4.5" fill="#FFFFFF"/><circle cx="52" cy="60" r="2.2" fill="#1E293B"/>
+                    <circle cx="68" cy="60" r="4.5" fill="#FFFFFF"/><circle cx="68" cy="60" r="2.2" fill="#1E293B"/>
+                </svg>`
+            };
+
+            const markup = art[id] || art.trex;
+            if (locked) {
+                return `<div class="opacity-30 grayscale contrast-125 pointer-events-none w-full h-full">${markup}</div>`;
+            }
+            return markup;
+        }
+
+        /* =========================================================================
+           3. STICKER COLLECTION & EDUCATIONAL DATASETS
+           ========================================================================= */
+        const STICKER_COLLECTION = [
+            // Dinosaurs (7)
+            { id: 'trex', category: 'dinosaurs', name: 'Mighty T-Rex', badge: '🦖', fact: 'Roar! T-Rex had tiny arms and super strong legs for stomping!' },
+            { id: 'triceratops', category: 'dinosaurs', name: 'Three-Horn Triceratops', badge: '🦕', fact: 'Triceratops had three horns on its face and loved munching leafy plants!' },
+            { id: 'stegosaurus', category: 'dinosaurs', name: 'Spiky Stegosaurus', badge: '🦖', fact: 'Stegosaurus had big bony plates on its back and four spikes on its tail!' },
+            { id: 'brachiosaurus', category: 'dinosaurs', name: 'Tall Brachiosaurus', badge: '🦕', fact: 'Brachiosaurus had a super long neck to reach leaves at the very top of trees!' },
+            { id: 'velociraptor', category: 'dinosaurs', name: 'Speedy Velociraptor', badge: '🦖', fact: 'Velociraptor was super fast and smart, and even had feathers!' },
+            { id: 'pterodactyl', category: 'dinosaurs', name: 'Soaring Pterodactyl', badge: '🦅', fact: 'Pterodactyl soared high in the sky with giant leathery wings!' },
+            { id: 'dinoegg', category: 'dinosaurs', name: 'Hatching Baby Dino', badge: '🥚', fact: 'Crack, crack! A baby dinosaur hatches out of its spotted egg!' },
+
+            // Snakes (6)
+            { id: 'python', category: 'snakes', name: 'Green Tree Python', badge: '🐍', fact: 'Hiss! Green Tree Pythons curl up like green ribbons on tree branches!' },
+            { id: 'cobra', category: 'snakes', name: 'King Cobra', badge: '🐍', fact: 'King Cobras can flare out a wide hood around their neck when they stand tall!' },
+            { id: 'rainbowboa', category: 'snakes', name: 'Rainbow Boa', badge: '🌈', fact: 'Rainbow Boas have shiny scales that sparkle like a rainbow in the sunlight!' },
+            { id: 'coralsnake', category: 'snakes', name: 'Striped Coral Snake', badge: '🐍', fact: 'Coral Snakes wear bright red, yellow, and dark stripes!' },
+            { id: 'gardensnake', category: 'snakes', name: 'Friendly Garden Snake', badge: '🌿', fact: 'Little Garden Snakes love slithering through cool grass and helping gardens!' },
+            { id: 'rattlesnake', category: 'snakes', name: 'Shaker Rattlesnake', badge: '🐍', fact: 'Rattlesnakes shake the rattle on their tail to say, Please give me space!' },
+
+            // Spiders (6)
+            { id: 'jumpingspider', category: 'spiders', name: 'Cute Jumping Spider', badge: '🕷️', fact: 'Boing! Jumping spiders have big curious eyes and can leap super far!' },
+            { id: 'tarantula', category: 'spiders', name: 'Fuzzy Tarantula', badge: '🕷️', fact: 'Tarantulas are big, fuzzy spiders that dig cozy underground burrows!' },
+            { id: 'orbweaver', category: 'spiders', name: 'Orb Weaver Spider', badge: '🕸️', fact: 'Orb Weavers spin giant, sparkly wheel-shaped webs every morning!' },
+            { id: 'spinyspider', category: 'spiders', name: 'Spiny Star Spider', badge: '⭐', fact: 'Spiny Star Spiders look like tiny colorful crowns in the garden!' },
+            { id: 'goldenspider', category: 'spiders', name: 'Golden Silk Spider', badge: '✨', fact: 'Golden Silk Spiders spin strong web threads that shine like real gold!' },
+            { id: 'ladybugspider', category: 'spiders', name: 'Ladybug Spider', badge: '🐞', fact: 'Ladybug Spiders have bright red backs with spots just like a ladybug!' }
+        ];
+
+        // MODE 1: "Because" Bridge (19 Scenarios including Dino, Snake & Spider themes!)
         const BECAUSE_BRIDGE_DATA = [
+            {
+                id: 'bb_dino1',
+                emotion: 'excited',
+                emotionLabel: 'excited',
+                bgColor: '#DCFCE7',
+                promptPrefix: 'I feel excited because',
+                correct: { icon: '🦖', text: 'we saw a giant T-Rex skeleton at the museum' },
+                distractors: [
+                    { icon: '🧦', text: 'I folded my laundry in a basket' },
+                    { icon: '🌧️', text: 'puddles dried up on the street' }
+                ]
+            },
+            {
+                id: 'bb_snake1',
+                emotion: 'proud',
+                emotionLabel: 'proud',
+                bgColor: '#FEF9C3',
+                promptPrefix: 'I feel proud because',
+                correct: { icon: '🐍', text: 'I learned that snakes smell with their tongues' },
+                distractors: [
+                    { icon: '🥣', text: 'my cereal bowl was empty' },
+                    { icon: '🧤', text: 'I lost one of my winter gloves' }
+                ]
+            },
+            {
+                id: 'bb_spider1',
+                emotion: 'happy',
+                emotionLabel: 'happy',
+                bgColor: '#E0F2FE',
+                promptPrefix: 'I feel happy because',
+                correct: { icon: '🕸️', text: 'a little spider spun a sparkly web outside' },
+                distractors: [
+                    { icon: '🤕', text: 'I stubbed my toe on a chair' },
+                    { icon: '⛈️', text: 'the power went out during dinner' }
+                ]
+            },
             {
                 id: 'bb1',
                 emotion: 'sad',
@@ -544,7 +802,7 @@
                 emotionLabel: 'worried',
                 bgColor: '#EDE9FE',
                 promptPrefix: 'I feel worried because',
-                correct: { icon: '🔍', text: 'I cannot find my favorite toy car' },
+                correct: { icon: '🔍', text: 'I cannot find my favorite toy dinosaur' },
                 distractors: [
                     { icon: '☀️', text: 'the sun is shining brightly' },
                     { icon: '🎨', text: 'I painted a picture of a cat' }
@@ -568,7 +826,7 @@
                 emotionLabel: 'excited',
                 bgColor: '#FCE7F3',
                 promptPrefix: 'I feel excited because',
-                correct: { icon: '🦁', text: 'we are going to the zoo today' },
+                correct: { icon: '🦁', text: 'we are going to the reptile zoo today' },
                 distractors: [
                     { icon: '🧹', text: 'I have to sweep the kitchen floor' },
                     { icon: '💤', text: 'it is time to turn off the lights' }
@@ -604,7 +862,7 @@
                 emotionLabel: 'proud',
                 bgColor: '#D1FAE5',
                 promptPrefix: 'I feel proud because',
-                correct: { icon: '📚', text: 'I read a whole book to my mom' },
+                correct: { icon: '📚', text: 'I read a whole dinosaur book to my mom' },
                 distractors: [
                     { icon: '🌧️', text: 'puddles formed on the sidewalk' },
                     { icon: '🧤', text: 'my mittens are blue and warm' }
@@ -616,7 +874,7 @@
                 emotionLabel: 'frustrated',
                 bgColor: '#FFEDD5',
                 promptPrefix: 'I feel frustrated because',
-                correct: { icon: '🖍️', text: 'my favorite red crayon broke in half' },
+                correct: { icon: '🖍️', text: 'my favorite green crayon broke in half' },
                 distractors: [
                     { icon: '🍓', text: 'strawberries taste sweet and juicy' },
                     { icon: '🦆', text: 'ducks swim in the pond' }
@@ -660,8 +918,44 @@
             }
         ];
 
-        // MODE 2: Story Detective (15 Mini-Stories for 6-year-old reading comprehension)
+        // MODE 2: Story Detective (18 Mini-Stories including Dino, Snake & Spider stories!)
         const STORY_DETECTIVE_DATA = [
+            {
+                id: 'sd_dino1',
+                title: 'Hungry Brachiosaurus',
+                sceneIcon: '🦕🌿🌳',
+                story: 'Little Brachiosaurus was hungry for lunch. The yummy green leaves were way up at the very top of a tall tree. He stretched his super long neck high into the air.',
+                question: 'Why did Brachiosaurus stretch his long neck?',
+                correct: { icon: '🍃', text: 'Because the yummy leaves were at the top of the tree' },
+                distractors: [
+                    { icon: '👟', text: 'Because he wanted to tie his shoelaces' },
+                    { icon: '🏊', text: 'Because he was swimming in the ocean' }
+                ]
+            },
+            {
+                id: 'sd_snake1',
+                title: 'Sunnyside Snake',
+                sceneIcon: '🐍☀️🪨',
+                story: 'Sammy the Garden Snake felt chilly in the morning shade. He slithered onto a flat rock where the warm yellow sun was shining brightly.',
+                question: 'Why did Sammy slither onto the sunny rock?',
+                correct: { icon: '🌞', text: 'Because he felt chilly and wanted to get warm' },
+                distractors: [
+                    { icon: '📚', text: 'Because he wanted to read a comic book' },
+                    { icon: '🍦', text: 'Because he was eating a cold popsicle' }
+                ]
+            },
+            {
+                id: 'sd_spider1',
+                title: 'Rosie’s Sparkly Web',
+                sceneIcon: '🕷️🕸️💧',
+                story: 'Rosie the Jumping Spider saw raindrops fall on her web. The drops sparkled like tiny diamonds in the morning light. Rosie hopped happily on a dry leaf.',
+                question: 'Why did Rosie hop onto a dry leaf?',
+                correct: { icon: '🍃', text: 'Because raindrops got on her web and she wanted a dry spot' },
+                distractors: [
+                    { icon: '🚗', text: 'Because she was waiting for a school bus' },
+                    { icon: '🎸', text: 'Because she was playing a loud drum' }
+                ]
+            },
             {
                 id: 'sd1',
                 title: 'Rainy Day Ready',
@@ -844,8 +1138,20 @@
             }
         ];
 
-        // MODE 3: Word Train Builder (14 Sentence Unscrambling Puzzles)
+        // MODE 3: Word Train Builder (16 Sentence Unscrambling Puzzles including Dino/Spider!)
         const WORD_TRAIN_DATA = [
+            {
+                id: 'wt_dino',
+                icon: '🦖😄',
+                hint: 'Seeing a giant dinosaur at the museum!',
+                words: ['I', 'am', 'happy', 'because', 'I', 'love', 'big', 'dinosaurs']
+            },
+            {
+                id: 'wt_spider',
+                icon: '🕷️🕸️',
+                hint: 'Why a spider makes a silky web.',
+                words: ['The', 'spider', 'spins', 'webs', 'because', 'it', 'is', 'smart']
+            },
             {
                 id: 'wt1',
                 icon: '🍦😢',
@@ -960,11 +1266,18 @@
         ];
 
         /* =========================================================================
-           4. APPLICATION STATE & UTILITY FUNCTIONS
+           4. APPLICATION STATE, LOCALSTORAGE & STICKER REWARD ENGINE
            ========================================================================= */
+        const STORAGE_KEY = 'wonderwords_dino_snake_spider_v1';
+
         const State = {
-            currentView: 'home', // 'home', 'bridge', 'detective', 'train', 'helper'
+            currentView: 'home', // 'home', 'bridge', 'detective', 'train', 'helper', 'stickers'
             stars: 0,
+            unlockedStickers: [], // Array of sticker IDs
+            stickerTab: 'dinosaurs', // 'dinosaurs', 'snakes', 'spiders'
+            placedSceneStickers: [], // { uid, id, x, y } on the Jungle & Dino Scene
+            selectedStickerToPlace: null,
+            lastUnlockedModalSticker: null,
             // Active Game Session State
             queue: [],
             currentIndex: 0,
@@ -978,6 +1291,50 @@
             selectedReason: null
         };
 
+        function loadProgress() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    State.stars = typeof parsed.stars === 'number' ? parsed.stars : 0;
+                    State.unlockedStickers = Array.isArray(parsed.unlockedStickers) ? parsed.unlockedStickers : [];
+                    State.placedSceneStickers = Array.isArray(parsed.placedSceneStickers) ? parsed.placedSceneStickers : [];
+                }
+            } catch (e) { /* Ignore storage issues */ }
+            updateTopBarUI();
+        }
+
+        function saveProgress() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                    stars: State.stars,
+                    unlockedStickers: State.unlockedStickers,
+                    placedSceneStickers: State.placedSceneStickers
+                }));
+            } catch (e) { /* Ignore storage issues */ }
+        }
+
+        function updateTopBarUI() {
+            const starEl = document.getElementById('star-count');
+            if (starEl) starEl.textContent = State.stars;
+
+            const badgeEl = document.getElementById('sticker-badge');
+            if (badgeEl) badgeEl.textContent = `${State.unlockedStickers.length}/${STICKER_COLLECTION.length}`;
+
+            const progressInCycle = State.stars % 5;
+            const labelEl = document.getElementById('next-sticker-label');
+            const barEl = document.getElementById('next-sticker-bar');
+            if (labelEl && barEl) {
+                if (State.unlockedStickers.length >= STICKER_COLLECTION.length) {
+                    labelEl.textContent = 'All Stickers Unlocked!';
+                    barEl.style.width = '100%';
+                } else {
+                    labelEl.textContent = `Next Sticker: ${progressInCycle} / 5`;
+                    barEl.style.width = `${(progressInCycle / 5) * 100}%`;
+                }
+            }
+        }
+
         // Fisher-Yates strict randomization shuffle
         function shuffleArray(arr) {
             const copy = [...arr];
@@ -989,14 +1346,67 @@
         }
 
         function addStars(count = 1) {
+            const prevStars = State.stars;
             State.stars += count;
             const starEl = document.getElementById('star-count');
             if (starEl) {
-                starEl.textContent = State.stars;
                 starEl.parentElement.classList.add('animate-wiggle');
                 setTimeout(() => starEl.parentElement.classList.remove('animate-wiggle'), 600);
             }
             launchConfetti();
+
+            // Check if a 5-star milestone was crossed to unlock a new Dino/Snake/Spider sticker!
+            const prevMilestones = Math.floor(prevStars / 5);
+            const newMilestones = Math.floor(State.stars / 5);
+
+            if (newMilestones > prevMilestones) {
+                unlockNextSticker();
+            }
+
+            updateTopBarUI();
+            saveProgress();
+        }
+
+        function unlockNextSticker() {
+            const lockedPool = STICKER_COLLECTION.filter(s => !State.unlockedStickers.includes(s.id));
+            if (lockedPool.length === 0) return;
+
+            // Pick a random locked sticker from Dinosaurs, Snakes, or Spiders!
+            const chosen = lockedPool[Math.floor(Math.random() * lockedPool.length)];
+            State.unlockedStickers.push(chosen.id);
+            State.lastUnlockedModalSticker = chosen;
+            saveProgress();
+            updateTopBarUI();
+
+            // Open celebratory modal after brief star celebration
+            setTimeout(() => {
+                AudioEngine.playStickerFanfare();
+                launchConfetti();
+                const modal = document.getElementById('sticker-unlock-modal');
+                document.getElementById('modal-sticker-art').innerHTML = getStickerSVG(chosen.id, false);
+                document.getElementById('modal-sticker-name').textContent = `${chosen.badge} ${chosen.name}`;
+                document.getElementById('modal-sticker-fact').textContent = chosen.fact;
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+
+                AudioEngine.speak(`Awesome job! You earned 5 stars and unlocked a new sticker: ${chosen.name}! ${chosen.fact}`);
+            }, 900);
+        }
+
+        function speakModalStickerFact() {
+            if (State.lastUnlockedModalSticker) {
+                AudioEngine.speak(`${State.lastUnlockedModalSticker.name}! ${State.lastUnlockedModalSticker.fact}`);
+            }
+        }
+
+        function closeUnlockModal(goToStickerBook = false) {
+            AudioEngine.playPop();
+            const modal = document.getElementById('sticker-unlock-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            if (goToStickerBook) {
+                openStickerBook(State.lastUnlockedModalSticker ? State.lastUnlockedModalSticker.category : 'dinosaurs');
+            }
         }
 
         function showToast(emoji, message, borderColor = 'border-amber-400') {
@@ -1097,6 +1507,29 @@
                         </div>
                     </div>
 
+                    <!-- Sticker Book Highlight Banner -->
+                    <div onclick="openStickerBook()" class="card-3d border-amber-400 hover:border-orange-500 p-4 sm:p-5 cursor-pointer bg-gradient-to-r from-emerald-100 via-amber-50 to-orange-100 flex flex-col sm:flex-row items-center justify-between gap-4 transition-transform hover:-translate-y-1">
+                        <div class="flex items-center gap-4 text-center sm:text-left">
+                            <div class="flex -space-x-2 text-4xl sm:text-5xl">
+                                <span>🦖</span><span>🐍</span><span>🕷️</span>
+                            </div>
+                            <div>
+                                <span class="inline-block bg-amber-300 text-amber-950 text-xs font-extrabold px-3 py-0.5 rounded-full uppercase">
+                                    ${State.unlockedStickers.length} of ${STICKER_COLLECTION.length} Unlocked
+                                </span>
+                                <h2 class="text-xl sm:text-2xl font-extrabold text-emerald-800">
+                                    Dinosaur, Snake & Spider Sticker Book!
+                                </h2>
+                                <p class="text-slate-700 font-bold text-sm sm:text-base">
+                                    Earn 5 stars in any game to unlock a new creature sticker & decorate your jungle!
+                                </p>
+                            </div>
+                        </div>
+                        <button class="btn-toy btn-tangerine px-6 py-3 rounded-2xl font-display font-bold text-lg shrink-0 flex items-center gap-2">
+                            <span>Open Sticker Book</span> <span>✨</span>
+                        </button>
+                    </div>
+
                     <!-- 4 Colorful Activity Cards Grid -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <!-- Game 1: Because Bridge -->
@@ -1106,7 +1539,7 @@
                                     🌉
                                 </div>
                                 <div class="space-y-1">
-                                    <span class="inline-block bg-sky-200 text-sky-800 text-xs font-extrabold px-3 py-0.5 rounded-full uppercase">16 Activities</span>
+                                    <span class="inline-block bg-sky-200 text-sky-800 text-xs font-extrabold px-3 py-0.5 rounded-full uppercase">19 Activities</span>
                                     <h2 class="text-2xl sm:text-3xl font-extrabold text-sky-700">"Because" Bridge</h2>
                                     <p class="text-slate-600 font-bold text-base">
                                         Help characters finish their sentences! Match why they feel sad, mad, happy, or proud.
@@ -1127,7 +1560,7 @@
                                     🕵️
                                 </div>
                                 <div class="space-y-1">
-                                    <span class="inline-block bg-purple-200 text-purple-800 text-xs font-extrabold px-3 py-0.5 rounded-full uppercase">15 Stories</span>
+                                    <span class="inline-block bg-purple-200 text-purple-800 text-xs font-extrabold px-3 py-0.5 rounded-full uppercase">18 Stories</span>
                                     <h2 class="text-2xl sm:text-3xl font-extrabold text-purple-700">Story Detective</h2>
                                     <p class="text-slate-600 font-bold text-base">
                                         Read or listen to mini-stories and use picture clues to answer "Why?" questions!
@@ -1148,7 +1581,7 @@
                                     🚂
                                 </div>
                                 <div class="space-y-1">
-                                    <span class="inline-block bg-emerald-200 text-emerald-800 text-xs font-extrabold px-3 py-0.5 rounded-full uppercase">14 Puzzles</span>
+                                    <span class="inline-block bg-emerald-200 text-emerald-800 text-xs font-extrabold px-3 py-0.5 rounded-full uppercase">16 Puzzles</span>
                                     <h2 class="text-2xl sm:text-3xl font-extrabold text-emerald-700">Word Train Builder</h2>
                                     <p class="text-slate-600 font-bold text-base">
                                         Put mixed-up word cars in the right order to make a "because" train chug along!
@@ -1854,7 +2287,204 @@
         }
 
         /* =========================================================================
-           10. SHARED RESHUFFLE & INITIALIZATION
+           10. DINOSAUR, SNAKE & SPIDER STICKER BOOK + JUNGLE SCENE DECORATOR
+           ========================================================================= */
+        function openStickerBook(tab = null) {
+            AudioEngine.playPop();
+            State.currentView = 'stickers';
+            if (tab) State.stickerTab = tab;
+            renderStickerBook();
+        }
+
+        function switchStickerTab(tab) {
+            AudioEngine.playPop();
+            State.stickerTab = tab;
+            renderStickerBook();
+        }
+
+        function renderStickerBook() {
+            const tabStickers = STICKER_COLLECTION.filter(s => s.category === State.stickerTab);
+            const remainingToNext = 5 - (State.stars % 5);
+
+            const container = document.getElementById('app-container');
+            container.innerHTML = `
+                <div class="animate-pop space-y-5">
+                    <!-- Top Sticker Book Header -->
+                    <div class="card-3d border-amber-300 bg-gradient-to-r from-emerald-50 via-amber-50 to-orange-50 p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3 text-center sm:text-left">
+                            <span class="text-4xl sm:text-5xl">🦕</span>
+                            <div>
+                                <h2 class="text-2xl sm:text-3xl font-extrabold text-emerald-800">My Creature Sticker Book</h2>
+                                <p class="font-bold text-slate-600 text-sm sm:text-base">
+                                    Unlocked <span class="text-orange-600 font-extrabold">${State.unlockedStickers.length} of ${STICKER_COLLECTION.length}</span> stickers!
+                                    ${State.unlockedStickers.length < STICKER_COLLECTION.length ? `Earn <span class="text-emerald-700 font-extrabold">${remainingToNext} more star${remainingToNext === 1 ? '' : 's'}</span> for your next sticker!` : 'You unlocked every single sticker!'}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Category Tabs -->
+                        <div class="flex flex-wrap justify-center gap-2">
+                            <button onclick="switchStickerTab('dinosaurs')"
+                                    class="btn-toy ${State.stickerTab === 'dinosaurs' ? 'btn-mint ring-4 ring-emerald-300' : 'btn-sky'} px-4 py-2.5 rounded-2xl font-display font-bold text-base flex items-center gap-1.5">
+                                <span>🦖</span> Dinosaurs
+                            </button>
+                            <button onclick="switchStickerTab('snakes')"
+                                    class="btn-toy ${State.stickerTab === 'snakes' ? 'btn-sunny ring-4 ring-amber-300' : 'btn-tangerine'} px-4 py-2.5 rounded-2xl font-display font-bold text-base flex items-center gap-1.5">
+                                <span>🐍</span> Snakes
+                            </button>
+                            <button onclick="switchStickerTab('spiders')"
+                                    class="btn-toy ${State.stickerTab === 'spiders' ? 'btn-purple ring-4 ring-purple-300' : 'btn-pink'} px-4 py-2.5 rounded-2xl font-display font-bold text-base flex items-center gap-1.5">
+                                <span>🕷️</span> Spiders
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sticker Grid for Active Tab -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                        ${tabStickers.map(sticker => {
+                            const isUnlocked = State.unlockedStickers.includes(sticker.id);
+                            const isSelectedForScene = State.selectedStickerToPlace === sticker.id;
+                            return `
+                                <div onclick="${isUnlocked ? `interactWithSticker('${sticker.id}')` : `lockedStickerHint()`}"
+                                     class="card-3d ${isUnlocked ? (isSelectedForScene ? 'border-orange-500 ring-4 ring-amber-300 bg-amber-50' : 'border-emerald-300 hover:border-emerald-400 bg-white') : 'border-slate-200 bg-slate-100/80'} p-4 flex flex-col items-center justify-between text-center gap-2 cursor-pointer transition-transform hover:-translate-y-1">
+                                    <div class="w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center relative">
+                                        ${getStickerSVG(sticker.id, !isUnlocked)}
+                                        ${!isUnlocked ? `<span class="absolute inset-0 flex items-center justify-center text-3xl drop-shadow">🔒</span>` : ''}
+                                    </div>
+                                    <div>
+                                        <p class="font-display font-bold text-base sm:text-lg ${isUnlocked ? 'text-slate-800' : 'text-slate-400'}">
+                                            ${isUnlocked ? sticker.name : 'Mystery Creature'}
+                                        </p>
+                                        <span class="inline-block mt-1 text-xs font-extrabold px-2.5 py-0.5 rounded-full ${isUnlocked ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-500'}">
+                                            ${isUnlocked ? '🔊 Tap for Fun Fact!' : '5 Stars to Unlock'}
+                                        </span>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+
+                    <!-- Interactive "My Jungle & Dino Scene" Playground -->
+                    <div class="card-3d border-emerald-400 p-5 bg-white space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div>
+                                <h3 class="text-xl sm:text-2xl font-extrabold text-emerald-800 flex items-center gap-2">
+                                    <span>🌴</span> My Jungle & Dino Scene
+                                </h3>
+                                <p class="text-sm font-bold text-slate-600">
+                                    ${State.unlockedStickers.length > 0
+                                        ? (State.selectedStickerToPlace
+                                            ? 'Tap anywhere in the jungle below to place your selected sticker!'
+                                            : 'Tap any unlocked sticker above, then tap inside the jungle to place it!')
+                                        : 'Unlock your first sticker by earning 5 stars in any game, then decorate your jungle!'}
+                                </p>
+                            </div>
+                            ${State.placedSceneStickers.length > 0 ? `
+                                <button onclick="clearJungleScene()" class="btn-toy btn-coral px-4 py-2 rounded-2xl font-display font-bold text-sm flex items-center gap-1.5">
+                                    <span>🧹</span> Clear Scene
+                                </button>
+                            ` : ''}
+                        </div>
+
+                        <!-- Prehistoric Jungle SVG Backdrop Canvas -->
+                        <div id="jungle-scene-canvas"
+                             onclick="placeStickerInScene(event)"
+                             class="relative w-full h-64 sm:h-80 rounded-3xl border-4 border-emerald-300 overflow-hidden cursor-pointer select-none shadow-inner"
+                             style="background: linear-gradient(180deg, #7DD3FC 0%, #BAE6FD 55%, #86EFAC 55%, #22C55E 100%);">
+                            <!-- Decorative Volcano, Sun, Trees & Cobweb SVG Scenery -->
+                            <svg viewBox="0 0 800 320" preserveAspectRatio="none" class="w-full h-full pointer-events-none">
+                                <!-- Warm Sun -->
+                                <circle cx="710" cy="60" r="36" fill="#FDE047" opacity="0.9"/>
+                                <!-- Distant Volcano -->
+                                <polygon points="140,185 230,65 275,65 365,185" fill="#78716C"/>
+                                <polygon points="230,65 275,65 262,88 252,78 242,90" fill="#F97316"/>
+                                <!-- Rolling Jungle Hills -->
+                                <ellipse cx="180" cy="210" rx="260" ry="55" fill="#4ADE80"/>
+                                <ellipse cx="620" cy="215" rx="280" ry="60" fill="#22C55E"/>
+                                <!-- Prehistoric Fern Trees -->
+                                <rect x="65" y="110" width="16" height="90" rx="6" fill="#92400E"/>
+                                <ellipse cx="73" cy="105" rx="45" ry="24" fill="#15803D"/>
+                                <rect x="705" y="115" width="16" height="95" rx="6" fill="#92400E"/>
+                                <ellipse cx="713" cy="110" rx="48" ry="26" fill="#166534"/>
+                                <!-- Little Pond for Snakes & Dinos -->
+                                <ellipse cx="420" cy="260" rx="115" ry="28" fill="#38BDF8" stroke="#0284C7" stroke-width="3"/>
+                            </svg>
+
+                            <!-- Placed Stickers Layer -->
+                            ${State.placedSceneStickers.map(item => `
+                                <div onclick="event.stopPropagation(); removePlacedSticker('${item.uid}')"
+                                     title="Tap sticker to pick up"
+                                     class="absolute w-16 h-16 sm:w-20 sm:h-20 -translate-x-1/2 -translate-y-1/2 transition-transform hover:scale-110 cursor-pointer drop-shadow-md"
+                                     style="left: ${item.x}%; top: ${item.y}%;">
+                                    ${getStickerSVG(item.id, false)}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function interactWithSticker(stickerId) {
+            const sticker = STICKER_COLLECTION.find(s => s.id === stickerId);
+            if (!sticker) return;
+            AudioEngine.playPop();
+            State.selectedStickerToPlace = stickerId;
+            AudioEngine.speak(`${sticker.name}! ${sticker.fact}`);
+            showToast(sticker.badge, `${sticker.name} selected! Tap the jungle to place it!`, 'border-emerald-400');
+            renderStickerBook();
+        }
+
+        function lockedStickerHint() {
+            AudioEngine.playGentleTryAgain();
+            const needed = 5 - (State.stars % 5);
+            showToast('🔒', `Earn ${needed} more star${needed === 1 ? '' : 's'} to unlock a new creature sticker!`, 'border-amber-400');
+            AudioEngine.speak(`Keep playing any game! Earn ${needed} more stars to unlock a new sticker!`);
+        }
+
+        function placeStickerInScene(event) {
+            if (!State.selectedStickerToPlace) {
+                if (State.unlockedStickers.length > 0) {
+                    // Automatically pick their most recently unlocked sticker for effortless tapping
+                    State.selectedStickerToPlace = State.unlockedStickers[State.unlockedStickers.length - 1];
+                } else {
+                    lockedStickerHint();
+                    return;
+                }
+            }
+            const canvas = document.getElementById('jungle-scene-canvas');
+            if (!canvas) return;
+            const rect = canvas.getBoundingClientRect();
+            const xPct = Math.max(8, Math.min(92, ((event.clientX - rect.left) / rect.width) * 100));
+            const yPct = Math.max(12, Math.min(88, ((event.clientY - rect.top) / rect.height) * 100));
+
+            State.placedSceneStickers.push({
+                uid: 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                id: State.selectedStickerToPlace,
+                x: xPct.toFixed(1),
+                y: yPct.toFixed(1)
+            });
+            AudioEngine.playSuccess();
+            saveProgress();
+            renderStickerBook();
+        }
+
+        function removePlacedSticker(uid) {
+            AudioEngine.playPop();
+            State.placedSceneStickers = State.placedSceneStickers.filter(p => p.uid !== uid);
+            saveProgress();
+            renderStickerBook();
+        }
+
+        function clearJungleScene() {
+            AudioEngine.playPop();
+            State.placedSceneStickers = [];
+            saveProgress();
+            renderStickerBook();
+        }
+
+        /* =========================================================================
+           11. SHARED RESHUFFLE & INITIALIZATION
            ========================================================================= */
         function reshuffleCurrentGame() {
             AudioEngine.playPop();
@@ -1876,8 +2506,9 @@
 
         window.onload = function() {
             AudioEngine.init();
+            loadProgress();
             goHome();
         };
     </script>
 </body>
-  </html>
+</html>
