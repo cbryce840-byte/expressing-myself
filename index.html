@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WonderWords: Feelings & Story Playground</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Kid-friendly rounded typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --font-display: 'Fredoka', cursive, sans-serif;
+            --font-body: 'Nunito', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: linear-gradient(135deg, #E0F2FE 0%, #FEF3C7 50%, #FCE7F3 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        h1, h2, h3, .font-display {
+            font-family: var(--font-display);
+        }
+
+        /* 3D Tactile Toy Buttons - Strictly vibrant, joyful colors (NO black buttons) */
+        .btn-toy {
+            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-bottom-width: 6px;
+            position: relative;
+            cursor: pointer;
+        }
+        .btn-toy:hover {
+            transform: translateY(-3px) scale(1.02);
+            filter: brightness(1.04);
+        }
+        .btn-toy:active {
+            transform: translateY(3px) scale(0.98);
+            border-bottom-width: 2px;
+        }
+
+        .btn-coral {
+            background: linear-gradient(180deg, #FF7A7A 0%, #FF5252 100%);
+            border-color: #D32F2F;
+            color: #FFFFFF;
+            box-shadow: 0 8px 20px -4px rgba(255, 82, 82, 0.45);
+        }
+        .btn-sunny {
+            background: linear-gradient(180deg, #FFE066 0%, #FFC107 100%);
+            border-color: #E08E00;
+            color: #4A2E00;
+            box-shadow: 0 8px 20px -4px rgba(255, 193, 7, 0.45);
+        }
+        .btn-sky {
+            background: linear-gradient(180deg, #60C5FF 0%, #2196F3 100%);
+            border-color: #1565C0;
+            color: #FFFFFF;
+            box-shadow: 0 8px 20px -4px rgba(33, 150, 243, 0.45);
+        }
+        .btn-mint {
+            background: linear-gradient(180deg, #5CE1A6 0%, #10B981 100%);
+            border-color: #047857;
+            color: #FFFFFF;
+            box-shadow: 0 8px 20px -4px rgba(16, 185, 129, 0.45);
+        }
+        .btn-purple {
+            background: linear-gradient(180deg, #B388FF 0%, #7C4DFF 100%);
+            border-color: #512DA8;
+            color: #FFFFFF;
+            box-shadow: 0 8px 20px -4px rgba(124, 77, 255, 0.45);
+        }
+        .btn-tangerine {
+            background: linear-gradient(180deg, #FFAB40 0%, #FF6D00 100%);
+            border-color: #C43E00;
+            color: #FFFFFF;
+            box-shadow: 0 8px 20px -4px rgba(255, 109, 0, 0.45);
+        }
+        .btn-pink {
+            background: linear-gradient(180deg, #FF80AB 0%, #EC407A 100%);
+            border-color: #AD1457;
+            color: #FFFFFF;
+            box-shadow: 0 8px 20px -4px rgba(236, 64, 122, 0.45);
+        }
+
+        /* Floating & Bouncing Animations */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-7px) rotate(1deg); }
+        }
+        @keyframes floatAlt {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(-1deg); }
+        }
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.75) translateY(15px); }
+            70% { transform: scale(1.05) translateY(-2px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            20% { transform: rotate(-6deg); }
+            40% { transform: rotate(6deg); }
+            60% { transform: rotate(-4deg); }
+            80% { transform: rotate(4deg); }
+        }
+        @keyframes rainbowGlow {
+            0% { box-shadow: 0 0 0 4px #FF5252, 0 12px 28px rgba(255, 82, 82, 0.4); }
+            33% { box-shadow: 0 0 0 4px #FFC107, 0 12px 28px rgba(255, 193, 7, 0.4); }
+            66% { box-shadow: 0 0 0 4px #10B981, 0 12px 28px rgba(16, 185, 129, 0.4); }
+            100% { box-shadow: 0 0 0 4px #7C4DFF, 0 12px 28px rgba(124, 77, 255, 0.4); }
+        }
+        @keyframes trainChug {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .animate-float-1 { animation: floatSlow 3.4s ease-in-out infinite; }
+        .animate-float-2 { animation: floatAlt 3.8s ease-in-out infinite 0.4s; }
+        .animate-float-3 { animation: floatSlow 3.6s ease-in-out infinite 0.8s; }
+        .animate-pop { animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        .animate-wiggle { animation: wiggle 0.5s ease-in-out; }
+        .animate-rainbow { animation: rainbowGlow 1.5s linear infinite; }
+        .animate-chug { animation: trainChug 0.45s ease-in-out infinite; }
+
+        /* 3D Visual Card Styling */
+        .card-3d {
+            background: #FFFFFF;
+            border-radius: 28px;
+            border: 4px solid #E2E8F0;
+            border-bottom-width: 9px;
+            box-shadow: 0 14px 30px -8px rgba(15, 23, 42, 0.12);
+        }
+
+        /* Drag & Drop Bridge Slot */
+        .bridge-slot {
+            border: 4px dashed #60A5FA;
+            background: rgba(239, 246, 255, 0.85);
+            transition: all 0.25s ease;
+        }
+        .bridge-slot.drag-over {
+            border-color: #F59E0B;
+            background: #FEF3C7;
+            transform: scale(1.04);
+        }
+        .bridge-slot.filled {
+            border-style: solid;
+            border-color: #10B981;
+            background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+        }
+
+        /* Confetti Particle */
+        .confetti-piece {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            border-radius: 4px;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Custom Scrollbar for friendly mobile/tablet look */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #93C5FD;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen">
+
+    <!-- Decorative Floating Sky Clouds (SVG Background Accents) -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0 opacity-60">
+        <svg class="absolute top-6 left-6 w-32 h-20 text-white animate-float-1" viewBox="0 0 120 70" fill="currentColor">
+            <path d="M25,60 H95 A20,20 0 0,0 95,20 A28,28 0 0,0 42,15 A22,22 0 0,0 25,60 Z"/>
+        </svg>
+        <svg class="absolute top-16 right-10 w-40 h-24 text-white animate-float-2" viewBox="0 0 120 70" fill="currentColor">
+            <path d="M25,60 H95 A20,20 0 0,0 95,20 A28,28 0 0,0 42,15 A22,22 0 0,0 25,60 Z"/>
+        </svg>
+        <svg class="absolute bottom-12 left-12 w-36 h-20 text-white animate-float-3" viewBox="0 0 120 70" fill="currentColor">
+            <path d="M25,60 H95 A20,20 0 0,0 95,20 A28,28 0 0,0 42,15 A22,22 0 0,0 25,60 Z"/>
+        </svg>
+    </div>
+
+    <!-- Top Navigation Bar -->
+    <header class="relative z-20 px-3 sm:px-6 pt-3 pb-2">
+        <div class="max-w-5xl mx-auto bg-white/90 backdrop-blur-md rounded-3xl border-4 border-sky-200 border-b-8 px-4 py-2.5 shadow-lg flex flex-wrap items-center justify-between gap-2">
+            <!-- Home / Logo Button -->
+            <button onclick="goHome()" class="btn-toy btn-sky px-4 py-2 rounded-2xl font-display font-bold text-base sm:text-lg flex items-center gap-2">
+                <span class="text-xl">🏠</span>
+                <span>Playground</span>
+            </button>
+
+            <!-- Star Counter Pill -->
+            <div class="flex items-center gap-2 bg-amber-100 border-2 border-amber-300 px-4 py-1.5 rounded-2xl shadow-inner">
+                <span class="text-2xl">⭐</span>
+                <span id="star-count" class="font-display font-bold text-xl text-amber-700">0</span>
+                <span class="hidden sm:inline text-sm font-extrabold text-amber-700 uppercase tracking-wide">Stars</span>
+            </div>
+
+            <!-- Voice & Sound Controls -->
+            <div class="flex items-center gap-2">
+                <button id="btn-autoread" onclick="toggleAutoRead()" class="btn-toy btn-mint px-3 sm:px-4 py-2 rounded-2xl font-bold text-sm sm:text-base flex items-center gap-1.5" title="Auto-read prompts aloud">
+                    <span id="autoread-icon" class="text-lg">🗣️</span>
+                    <span id="autoread-label" class="hidden md:inline">Auto-Read: ON</span>
+                </button>
+                <button id="btn-sfx" onclick="toggleSfx()" class="btn-toy btn-sunny px-3 py-2 rounded-2xl font-bold text-sm sm:text-base flex items-center gap-1" title="Toggle cheerful sounds">
+                    <span id="sfx-icon" class="text-lg">🎵</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dynamic View Container -->
+    <main id="app-container" class="relative z-10 flex-1 max-w-5xl w-full mx-auto px-3 sm:px-6 py-4 flex flex-col justify-center">
+        <!-- Views are dynamically injected here -->
+    </main>
+
+    <!-- Friendly Toast / Helper Banner (Never uses alert()) -->
+    <div id="helper-toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 transform translate-y-4">
+        <div id="helper-toast-inner" class="bg-white border-4 border-amber-400 border-b-8 rounded-3xl px-6 py-3 shadow-2xl flex items-center gap-3 max-w-md">
+            <span id="toast-emoji" class="text-3xl">🌟</span>
+            <p id="toast-text" class="font-display font-bold text-lg text-slate-800">Great job!</p>
+        </div>
+    </div>
+
+    <script>
+        /* =========================================================================
+           1. AUDIO & CHEERFUL FEMALE TEXT-TO-SPEECH ENGINE
+           ========================================================================= */
+        const AudioEngine = {
+            autoRead: true,
+            sfxEnabled: true,
+            preferredVoice: null,
+            audioCtx: null,
+
+            init() {
+                // Load available voices and prioritize warm, cheerful female voices
+                const pickVoice = () => {
+                    if (!('speechSynthesis' in window)) return;
+                    const voices = window.speechSynthesis.getVoices();
+                    if (!voices.length) return;
+
+                    const preferredNames = [
+                        'Samantha',
+                        'Google US English Female',
+                        'Microsoft Zira',
+                        'Victoria',
+                        'Karen',
+                        'Moira',
+                        'Tessa',
+                        'Google UK English Female',
+                        'Allison',
+                        'Ava',
+                        'Nicky',
+                        'Female'
+                    ];
+
+                    for (const name of preferredNames) {
+                        const match = voices.find(v => v.name.includes(name) && v.lang.startsWith('en'));
+                        if (match) {
+                            this.preferredVoice = match;
+                            return;
+                        }
+                    }
+                    // Fallback to any English voice
+                    this.preferredVoice = voices.find(v => v.lang.startsWith('en')) || voices[0];
+                };
+
+                pickVoice();
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.onvoiceschanged = pickVoice;
+                }
+            },
+
+            speak(text, onEndCallback = null) {
+                if (!('speechSynthesis' in window)) {
+                    if (onEndCallback) onEndCallback();
+                    return;
+                }
+                try {
+                    window.speechSynthesis.cancel();
+                    const cleanText = text.replace(/\[.*?\]/g, 'blank').replace(/___+/g, 'blank');
+                    const utterance = new SpeechSynthesisUtterance(cleanText);
+                    if (this.preferredVoice) {
+                        utterance.voice = this.preferredVoice;
+                    }
+                    // Warm, cheerful, clear cadence for a 6-year-old
+                    utterance.pitch = 1.15;
+                    utterance.rate = 0.92;
+                    utterance.volume = 1.0;
+
+                    if (onEndCallback) {
+                        utterance.onend = onEndCallback;
+                        utterance.onerror = onEndCallback;
+                    }
+                    window.speechSynthesis.speak(utterance);
+                } catch (e) {
+                    if (onEndCallback) onEndCallback();
+                }
+            },
+
+            initAudioCtx() {
+                if (!this.audioCtx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContext) {
+                        this.audioCtx = new AudioContext();
+                    }
+                }
+                if (this.audioCtx && this.audioCtx.state === 'suspended') {
+                    this.audioCtx.resume();
+                }
+            },
+
+            playTone(freq, type = 'sine', duration = 0.18, delay = 0, vol = 0.18) {
+                if (!this.sfxEnabled) return;
+                try {
+                    this.initAudioCtx();
+                    if (!this.audioCtx) return;
+                    const osc = this.audioCtx.createOscillator();
+                    const gain = this.audioCtx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.audioCtx.currentTime + delay);
+
+                    gain.gain.setValueAtTime(0.001, this.audioCtx.currentTime + delay);
+                    gain.gain.exponentialRampToValueAtTime(vol, this.audioCtx.currentTime + delay + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + delay + duration);
+
+                    osc.connect(gain);
+                    gain.connect(this.audioCtx.destination);
+                    osc.start(this.audioCtx.currentTime + delay);
+                    osc.stop(this.audioCtx.currentTime + delay + duration + 0.02);
+                } catch (e) { /* Ignore audio block errors */ }
+            },
+
+            playPop() {
+                this.playTone(520, 'sine', 0.1, 0, 0.15);
+                this.playTone(680, 'sine', 0.12, 0.05, 0.15);
+            },
+
+            playSuccess() {
+                // Happy ascending major arpeggio chime
+                this.playTone(523.25, 'triangle', 0.18, 0.00, 0.2); // C5
+                this.playTone(659.25, 'triangle', 0.18, 0.10, 0.2); // E5
+                this.playTone(783.99, 'triangle', 0.18, 0.20, 0.2); // G5
+                this.playTone(1046.50, 'triangle', 0.38, 0.30, 0.25); // C6
+            },
+
+            playGentleTryAgain() {
+                // Soft, warm two-note marimba-like nudge (never harsh)
+                this.playTone(392.00, 'sine', 0.2, 0.00, 0.14); // G4
+                this.playTone(349.23, 'sine', 0.25, 0.16, 0.14); // F4
+            }
+        };
+
+        /* =========================================================================
+           2. CUSTOM CUTE SVG CHARACTER FACES & SCENE ILLUSTRATIONS
+           ========================================================================= */
+        function getCharacterSVG(emotion, bgColor = '#FEF3C7') {
+            const faces = {
+                sad: `
+                    <circle cx="60" cy="62" r="44" fill="#FFD59E" stroke="#E09F5A" stroke-width="4"/>
+                    <path d="M38 48 Q45 43 50 48" stroke="#5C3A21" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    <path d="M70 48 Q75 43 82 48" stroke="#5C3A21" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    <circle cx="44" cy="56" r="5" fill="#3B2314"/>
+                    <circle cx="76" cy="56" r="5" fill="#3B2314"/>
+                    <path d="M44 63 Q41 72 44 76 Q47 72 44 63 Z" fill="#38BDF8"/>
+                    <path d="M45 84 Q60 72 75 84" stroke="#5C3A21" stroke-width="4" fill="none" stroke-linecap="round"/>
+                `,
+                mad: `
+                    <circle cx="60" cy="62" r="44" fill="#FCA5A5" stroke="#EF4444" stroke-width="4"/>
+                    <path d="M36 45 L51 52" stroke="#5C1D1D" stroke-width="4.5" stroke-linecap="round"/>
+                    <path d="M84 45 L69 52" stroke="#5C1D1D" stroke-width="4.5" stroke-linecap="round"/>
+                    <circle cx="44" cy="58" r="5" fill="#3B1010"/>
+                    <circle cx="76" cy="58" r="5" fill="#3B1010"/>
+                    <path d="M44 82 Q60 72 76 82" stroke="#5C1D1D" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+                `,
+                frustrated: `
+                    <circle cx="60" cy="62" r="44" fill="#FDBA74" stroke="#EA580C" stroke-width="4"/>
+                    <path d="M36 47 L51 51" stroke="#5C2D16" stroke-width="4" stroke-linecap="round"/>
+                    <path d="M84 47 L69 51" stroke="#5C2D16" stroke-width="4" stroke-linecap="round"/>
+                    <circle cx="44" cy="58" r="5" fill="#3B1A08"/>
+                    <circle cx="76" cy="58" r="5" fill="#3B1A08"/>
+                    <path d="M42 79 Q51 74 60 79 Q69 84 78 79" stroke="#5C2D16" stroke-width="4" fill="none" stroke-linecap="round"/>
+                `,
+                worried: `
+                    <circle cx="60" cy="62" r="44" fill="#DDD6FE" stroke="#8B5CF6" stroke-width="4"/>
+                    <path d="M36 50 Q44 42 51 47" stroke="#3B1D6E" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    <path d="M84 50 Q76 42 69 47" stroke="#3B1D6E" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    <circle cx="44" cy="58" r="5.5" fill="#2E1065"/>
+                    <circle cx="76" cy="58" r="5.5" fill="#2E1065"/>
+                    <ellipse cx="60" cy="80" rx="11" ry="6" fill="#7C3AED" opacity="0.35" stroke="#3B1D6E" stroke-width="3"/>
+                `,
+                scared: `
+                    <circle cx="60" cy="62" r="44" fill="#BAE6FD" stroke="#0284C7" stroke-width="4"/>
+                    <path d="M36 46 Q44 39 51 45" stroke="#0C4A6E" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    <path d="M84 46 Q76 39 69 45" stroke="#0C4A6E" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    <circle cx="44" cy="57" r="6.5" fill="#FFFFFF" stroke="#0C4A6E" stroke-width="2.5"/>
+                    <circle cx="44" cy="57" r="3" fill="#0C4A6E"/>
+                    <circle cx="76" cy="57" r="6.5" fill="#FFFFFF" stroke="#0C4A6E" stroke-width="2.5"/>
+                    <circle cx="76" cy="57" r="3" fill="#0C4A6E"/>
+                    <ellipse cx="60" cy="80" rx="9" ry="11" fill="#0C4A6E"/>
+                `,
+                happy: `
+                    <circle cx="60" cy="62" r="44" fill="#FDE68A" stroke="#F59E0B" stroke-width="4"/>
+                    <path d="M37 54 Q44 45 51 54" stroke="#5C3A21" stroke-width="4" fill="none" stroke-linecap="round"/>
+                    <path d="M69 54 Q76 45 83 54" stroke="#5C3A21" stroke-width="4" fill="none" stroke-linecap="round"/>
+                    <circle cx="34" cy="65" r="6" fill="#FB7185" opacity="0.5"/>
+                    <circle cx="86" cy="65" r="6" fill="#FB7185" opacity="0.5"/>
+                    <path d="M42 72 Q60 92 78 72 Z" fill="#EF4444" stroke="#5C3A21" stroke-width="3.5" stroke-linejoin="round"/>
+                `,
+                proud: `
+                    <circle cx="60" cy="62" r="44" fill="#A7F3D0" stroke="#10B981" stroke-width="4"/>
+                    <polygon points="60,12 64,22 75,22 66,28 69,38 60,32 51,38 54,28 45,22 56,22" fill="#FBBF24" stroke="#D97706" stroke-width="2"/>
+                    <path d="M38 55 Q44 48 50 55" stroke="#064E3B" stroke-width="4" fill="none" stroke-linecap="round"/>
+                    <path d="M70 55 Q76 48 82 55" stroke="#064E3B" stroke-width="4" fill="none" stroke-linecap="round"/>
+                    <path d="M43 73 Q60 90 77 73" stroke="#064E3B" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+                `,
+                excited: `
+                    <circle cx="60" cy="62" r="44" fill="#FBCFE8" stroke="#EC4899" stroke-width="4"/>
+                    <polygon points="44,48 46,53 51,53 47,56 48,61 44,58 40,61 41,56 37,53 42,53" fill="#F59E0B"/>
+                    <polygon points="76,48 78,53 83,53 79,56 80,61 76,58 72,61 73,56 69,53 74,53" fill="#F59E0B"/>
+                    <path d="M41 71 Q60 95 79 71 Z" fill="#F43F5E" stroke="#831843" stroke-width="3.5" stroke-linejoin="round"/>
+                `,
+                tired: `
+                    <circle cx="60" cy="62" r="44" fill="#CBD5E1" stroke="#64748B" stroke-width="4"/>
+                    <path d="M37 56 Q44 62 51 56" stroke="#334155" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    <path d="M69 56 Q76 62 83 56" stroke="#334155" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    <ellipse cx="60" cy="79" rx="8" ry="9" fill="#475569"/>
+                    <text x="86" y="34" font-family="Fredoka" font-weight="bold" font-size="16" fill="#3B82F6">Zzz</text>
+                `,
+                overwhelmed: `
+                    <circle cx="60" cy="62" r="44" fill="#FED7AA" stroke="#F97316" stroke-width="4"/>
+                    <path d="M38 52 C42 46, 48 58, 44 54" stroke="#7C2D12" stroke-width="3.5" fill="none"/>
+                    <path d="M74 52 C78 46, 84 58, 80 54" stroke="#7C2D12" stroke-width="3.5" fill="none"/>
+                    <path d="M42 78 Q48 72 54 78 Q60 84 66 78 Q72 72 78 78" stroke="#7C2D12" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    <path d="M14 48 Q8 62 14 76" stroke="#EF4444" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    <path d="M106 48 Q112 62 106 76" stroke="#EF4444" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                `
+            };
+
+            const faceMarkup = faces[emotion] || faces.happy;
+            return `
+                <svg viewBox="0 0 120 120" class="w-24 h-24 sm:w-28 sm:h-28 mx-auto drop-shadow-md">
+                    <rect x="6" y="6" width="108" height="108" rx="30" fill="${bgColor}"/>
+                    ${faceMarkup}
+                </svg>
+            `;
+        }
+
+        /* =========================================================================
+           3. RICH EDUCATIONAL DATASETS (46 UNIQUE ACTIVITIES ACROSS 4 MODES)
+           ========================================================================= */
+
+        // MODE 1: "Because" Bridge (16 Scenarios)
+        const BECAUSE_BRIDGE_DATA = [
+            {
+                id: 'bb1',
+                emotion: 'sad',
+                emotionLabel: 'sad',
+                bgColor: '#DBEAFE',
+                promptPrefix: 'I feel sad because',
+                correct: { icon: '🍦', text: 'my ice cream fell on the ground' },
+                distractors: [
+                    { icon: '🦋', text: 'a pretty butterfly flew by' },
+                    { icon: '🦷', text: 'I brushed my teeth cleanly' }
+                ]
+            },
+            {
+                id: 'bb2',
+                emotion: 'mad',
+                emotionLabel: 'mad',
+                bgColor: '#FEE2E2',
+                promptPrefix: 'I feel mad because',
+                correct: { icon: '🧱', text: 'someone knocked over my block tower' },
+                distractors: [
+                    { icon: '🌈', text: 'there is a rainbow outside' },
+                    { icon: '🧦', text: 'I put on my warm socks' }
+                ]
+            },
+            {
+                id: 'bb3',
+                emotion: 'proud',
+                emotionLabel: 'proud',
+                bgColor: '#D1FAE5',
+                promptPrefix: 'I feel proud because',
+                correct: { icon: '👟', text: 'I tied my shoes all by myself' },
+                distractors: [
+                    { icon: '🌧️', text: 'it started raining at recess' },
+                    { icon: '🥣', text: 'I spilled milk on the table' }
+                ]
+            },
+            {
+                id: 'bb4',
+                emotion: 'scared',
+                emotionLabel: 'scared',
+                bgColor: '#E0F2FE',
+                promptPrefix: 'I feel scared because',
+                correct: { icon: '⚡', text: 'the thunder made a loud boom' },
+                distractors: [
+                    { icon: '🧸', text: 'I hugged my soft teddy bear' },
+                    { icon: '🍌', text: 'I ate a yummy yellow banana' }
+                ]
+            },
+            {
+                id: 'bb5',
+                emotion: 'frustrated',
+                emotionLabel: 'frustrated',
+                bgColor: '#FFEDD5',
+                promptPrefix: 'I feel frustrated because',
+                correct: { icon: '🧩', text: 'this puzzle piece will not fit' },
+                distractors: [
+                    { icon: '🎈', text: 'I got a shiny red balloon' },
+                    { icon: '🐶', text: 'the puppy wagged its tail' }
+                ]
+            },
+            {
+                id: 'bb6',
+                emotion: 'happy',
+                emotionLabel: 'happy',
+                bgColor: '#FEF3C7',
+                promptPrefix: 'I feel happy because',
+                correct: { icon: '🎂', text: 'my friends came to my birthday party' },
+                distractors: [
+                    { icon: '🤕', text: 'I bumped my knee on a rock' },
+                    { icon: '⛈️', text: 'we had to stay inside all day' }
+                ]
+            },
+            {
+                id: 'bb7',
+                emotion: 'worried',
+                emotionLabel: 'worried',
+                bgColor: '#EDE9FE',
+                promptPrefix: 'I feel worried because',
+                correct: { icon: '🔍', text: 'I cannot find my favorite toy car' },
+                distractors: [
+                    { icon: '☀️', text: 'the sun is shining brightly' },
+                    { icon: '🎨', text: 'I painted a picture of a cat' }
+                ]
+            },
+            {
+                id: 'bb8',
+                emotion: 'tired',
+                emotionLabel: 'tired',
+                bgColor: '#E2E8F0',
+                promptPrefix: 'I feel tired because',
+                correct: { icon: '🏃', text: 'I ran and played at the park all morning' },
+                distractors: [
+                    { icon: '📖', text: 'I just woke up from a long nap' },
+                    { icon: '🍎', text: 'crunchy apples are red and sweet' }
+                ]
+            },
+            {
+                id: 'bb9',
+                emotion: 'excited',
+                emotionLabel: 'excited',
+                bgColor: '#FCE7F3',
+                promptPrefix: 'I feel excited because',
+                correct: { icon: '🦁', text: 'we are going to the zoo today' },
+                distractors: [
+                    { icon: '🧹', text: 'I have to sweep the kitchen floor' },
+                    { icon: '💤', text: 'it is time to turn off the lights' }
+                ]
+            },
+            {
+                id: 'bb10',
+                emotion: 'overwhelmed',
+                emotionLabel: 'overwhelmed',
+                bgColor: '#FFEDD5',
+                promptPrefix: 'My ears hurt because',
+                correct: { icon: '📢', text: 'everyone is shouting too loudly' },
+                distractors: [
+                    { icon: '🤫', text: 'the library is super quiet' },
+                    { icon: '🐢', text: 'the turtle walks very slowly' }
+                ]
+            },
+            {
+                id: 'bb11',
+                emotion: 'sad',
+                emotionLabel: 'sad',
+                bgColor: '#DBEAFE',
+                promptPrefix: 'I feel sad because',
+                correct: { icon: '👋', text: 'Grandma had to go back home' },
+                distractors: [
+                    { icon: '🍪', text: 'we baked warm chocolate cookies' },
+                    { icon: '🚲', text: 'I rode my bike down the path' }
+                ]
+            },
+            {
+                id: 'bb12',
+                emotion: 'proud',
+                emotionLabel: 'proud',
+                bgColor: '#D1FAE5',
+                promptPrefix: 'I feel proud because',
+                correct: { icon: '📚', text: 'I read a whole book to my mom' },
+                distractors: [
+                    { icon: '🌧️', text: 'puddles formed on the sidewalk' },
+                    { icon: '🧤', text: 'my mittens are blue and warm' }
+                ]
+            },
+            {
+                id: 'bb13',
+                emotion: 'frustrated',
+                emotionLabel: 'frustrated',
+                bgColor: '#FFEDD5',
+                promptPrefix: 'I feel frustrated because',
+                correct: { icon: '🖍️', text: 'my favorite red crayon broke in half' },
+                distractors: [
+                    { icon: '🍓', text: 'strawberries taste sweet and juicy' },
+                    { icon: '🦆', text: 'ducks swim in the pond' }
+                ]
+            },
+            {
+                id: 'bb14',
+                emotion: 'happy',
+                emotionLabel: 'happy',
+                bgColor: '#FEF3C7',
+                promptPrefix: 'I feel happy because',
+                correct: { icon: '🤝', text: 'my friend shared their swings with me' },
+                distractors: [
+                    { icon: '🗑️', text: 'my drawing fell in the mud' },
+                    { icon: '🤒', text: 'my tummy feels a little sick' }
+                ]
+            },
+            {
+                id: 'bb15',
+                emotion: 'worried',
+                emotionLabel: 'worried',
+                bgColor: '#EDE9FE',
+                promptPrefix: 'I feel worried because',
+                correct: { icon: '🏫', text: 'today is my first day in a new class' },
+                distractors: [
+                    { icon: '🥪', text: 'I have a cheese sandwich for lunch' },
+                    { icon: '🐸', text: 'frogs like to hop on lily pads' }
+                ]
+            },
+            {
+                id: 'bb16',
+                emotion: 'mad',
+                emotionLabel: 'mad',
+                bgColor: '#FEE2E2',
+                promptPrefix: 'I feel mad because',
+                correct: { icon: '⚽', text: 'someone took the ball without asking' },
+                distractors: [
+                    { icon: '🌻', text: 'yellow sunflowers grow tall' },
+                    { icon: '🛁', text: 'bubbles float in the bathtub' }
+                ]
+            }
+        ];
+
+        // MODE 2: Story Detective (15 Mini-Stories for 6-year-old reading comprehension)
+        const STORY_DETECTIVE_DATA = [
+            {
+                id: 'sd1',
+                title: 'Rainy Day Ready',
+                sceneIcon: '🌧️👢☂️',
+                story: 'Maya looked out her window. Big dark clouds covered the sun. She put on her yellow boots and grabbed her umbrella.',
+                question: 'Why did Maya grab her umbrella?',
+                correct: { icon: '⛈️', text: 'Because it was going to rain outside' },
+                distractors: [
+                    { icon: '🏖️', text: 'Because she was going swimming at the beach' },
+                    { icon: '🛌', text: 'Because it was time to go to sleep' }
+                ]
+            },
+            {
+                id: 'sd2',
+                title: 'The Empty Bowl',
+                sceneIcon: '🐕🥣👀',
+                story: 'Buster the puppy sat next to his food bowl. He looked at Sam and gave a soft whine. His tummy made a loud rumble.',
+                question: 'Why did Buster sit by his bowl and whine?',
+                correct: { icon: '🦴', text: 'Because Buster was hungry for dinner' },
+                distractors: [
+                    { icon: '🚗', text: 'Because Buster wanted to drive a car' },
+                    { icon: '❄️', text: 'Because Buster was too cold in the snow' }
+                ]
+            },
+            {
+                id: 'sd3',
+                title: 'Sticky Fingers',
+                sceneIcon: '🍯🧼💦',
+                story: 'Leo ate a big pancake with sweet sticky syrup. When he finished, his fingers were shiny and sticky. He walked straight to the sink.',
+                question: 'Why did Leo walk to the sink?',
+                correct: { icon: '🫧', text: 'Because he needed to wash his sticky hands' },
+                distractors: [
+                    { icon: '⚽', text: 'Because he wanted to kick a soccer ball' },
+                    { icon: '🎸', text: 'Because he was going to play a guitar' }
+                ]
+            },
+            {
+                id: 'sd4',
+                title: 'Winter Playtime',
+                sceneIcon: '❄️🧤🧣',
+                story: 'White snow fell all night long. Mia put on her thick coat, warm hat, and fuzzy mittens before opening the front door.',
+                question: 'Why did Mia put on a thick coat and mittens?',
+                correct: { icon: '☃️', text: 'Because it was freezing cold in the snow' },
+                distractors: [
+                    { icon: '🌞', text: 'Because the weather was super hot and sunny' },
+                    { icon: '🛁', text: 'Because she was taking a warm bubble bath' }
+                ]
+            },
+            {
+                id: 'sd5',
+                title: 'The Lost Hat',
+                sceneIcon: '🧢💨🌳',
+                story: 'The wind blew WHOOSH! Toby’s blue cap flew right off his head and landed high up in a bush. Toby frowned and crossed his arms.',
+                question: 'Why did Toby frown?',
+                correct: { icon: '🧢', text: 'Because the wind blew his cap into a bush' },
+                distractors: [
+                    { icon: '🍦', text: 'Because he won a giant ice cream cone' },
+                    { icon: '🎵', text: 'Because he heard his favorite happy song' }
+                ]
+            },
+            {
+                id: 'sd6',
+                title: 'Bedtime Yawns',
+                sceneIcon: '🌙🧸🥱',
+                story: 'The moon came up in the dark sky. Ella rubbed her eyes and gave a big yawn. She hugged her bunny and climbed into bed.',
+                question: 'Why did Ella climb into bed?',
+                correct: { icon: '😴', text: 'Because it was nighttime and she was sleepy' },
+                distractors: [
+                    { icon: '🥞', text: 'Because it was morning and time for pancakes' },
+                    { icon: '🏊', text: 'Because she wanted to jump in the pool' }
+                ]
+            },
+            {
+                id: 'sd7',
+                title: 'The Thirsty Flower',
+                sceneIcon: '🌻💧🌞',
+                story: 'Ben saw a little flower drooping in its pot. The dirt was dry like sand. Ben filled his watering can and gave it a drink.',
+                question: 'Why did Ben water the flower?',
+                correct: { icon: '🌱', text: 'Because the dirt was dry and the plant needed water' },
+                distractors: [
+                    { icon: '🍕', text: 'Because the flower wanted a slice of pizza' },
+                    { icon: '✂️', text: 'Because Ben wanted to cut the flower' }
+                ]
+            },
+            {
+                id: 'sd8',
+                title: 'Surprise Box',
+                sceneIcon: '🎁🎉😄',
+                story: 'Zoe opened the shiny box with a big red bow. Inside was the exact fire truck she wished for! Zoe jumped up and cheered.',
+                question: 'Why did Zoe jump up and cheer?',
+                correct: { icon: '🚒', text: 'Because she got the fire truck she wished for' },
+                distractors: [
+                    { icon: '🥦', text: 'Because she dropped her broccoli on the floor' },
+                    { icon: '🕷️', text: 'Because a spider crawled on her shoe' }
+                ]
+            },
+            {
+                id: 'sd9',
+                title: 'Too Hot to Eat',
+                sceneIcon: '🍜💨👄',
+                story: 'Dad put a bowl of warm soup on the table. Steam went up into the air. Noah blew on his spoon before taking a bite.',
+                question: 'Why did Noah blow on his spoon?',
+                correct: { icon: '🔥', text: 'Because the soup was too hot for his mouth' },
+                distractors: [
+                    { icon: '🧊', text: 'Because the soup was frozen like ice' },
+                    { icon: '🎈', text: 'Because he was blowing up a party balloon' }
+                ]
+            },
+            {
+                id: 'sd10',
+                title: 'Helper Hands',
+                sceneIcon: '🖍️📦😊',
+                story: 'Ava spilled her box of crayons all over the rug. Her brother Max came over and helped pick every single crayon up. Ava gave Max a big smile.',
+                question: 'Why did Ava smile at Max?',
+                correct: { icon: '🤝', text: 'Because Max kindly helped her pick up the crayons' },
+                distractors: [
+                    { icon: '🙈', text: 'Because Max hid her crayons under the bed' },
+                    { icon: '🌧️', text: 'Because rain came through the ceiling' }
+                ]
+            },
+            {
+                id: 'sd11',
+                title: 'Dark Room',
+                sceneIcon: '🔦🏠✨',
+                story: 'A big storm made the lights go out in the house. Everything was dark. Mom turned on a bright flashlight so they could see.',
+                question: 'Why did Mom turn on a flashlight?',
+                correct: { icon: '💡', text: 'Because the house lights went out in the storm' },
+                distractors: [
+                    { icon: '☀️', text: 'Because the sun was too bright inside' },
+                    { icon: '📺', text: 'Because she wanted to watch a cartoon' }
+                ]
+            },
+            {
+                id: 'sd12',
+                title: 'The Flat Tire',
+                sceneIcon: '🚲🔧😮',
+                story: 'Liam wanted to ride his bike to the park. When he rolled it out, the front tire was flat like a pancake. Liam went to ask Dad for the air pump.',
+                question: 'Why did Liam ask Dad for the air pump?',
+                correct: { icon: '🚲', text: 'Because his bike tire was flat and needed air' },
+                distractors: [
+                    { icon: '🏊', text: 'Because he wanted to fill up a swimming pool' },
+                    { icon: '🧁', text: 'Because he was baking cupcakes with Dad' }
+                ]
+            },
+            {
+                id: 'sd13',
+                title: 'Quiet Tiara',
+                sceneIcon: '👶🤫👣',
+                story: 'Baby Lily was finally fast asleep in her crib. Owen walked on his tiptoes and whispered softly when he passed her room.',
+                question: 'Why did Owen walk on his tiptoes?',
+                correct: { icon: '😴', text: 'Because he did not want to wake up the sleeping baby' },
+                distractors: [
+                    { icon: '🐸', text: 'Because he was pretending to be a loud frog' },
+                    { icon: '👟', text: 'Because his shoes were stuck in sticky glue' }
+                ]
+            },
+            {
+                id: 'sd14',
+                title: 'Muddy Boots',
+                sceneIcon: '🥾💩🚪',
+                story: 'Chloe jumped in three big mud puddles after school. Her boots were covered in brown mud. She took them off on the porch before going inside.',
+                question: 'Why did Chloe take her boots off on the porch?',
+                correct: { icon: '🧹', text: 'Because she did not want to get mud on the clean floor' },
+                distractors: [
+                    { icon: '🧦', text: 'Because she wanted to wear boots in the bathtub' },
+                    { icon: '🐱', text: 'Because the cat wanted to wear her boots' }
+                ]
+            },
+            {
+                id: 'sd15',
+                title: 'The Tall Shelf',
+                sceneIcon: '🧸🪜😊',
+                story: 'Nora wanted her teddy bear from the top shelf, but she was too short to reach it. She asked her tall sister to hand it down to her.',
+                question: 'Why did Nora ask her sister for help?',
+                correct: { icon: '📏', text: 'Because the teddy bear was too high for Nora to reach' },
+                distractors: [
+                    { icon: '🍎', text: 'Because Nora wanted to eat an apple' },
+                    { icon: '🚗', text: 'Because her sister was driving to the store' }
+                ]
+            }
+        ];
+
+        // MODE 3: Word Train Builder (14 Sentence Unscrambling Puzzles)
+        const WORD_TRAIN_DATA = [
+            {
+                id: 'wt1',
+                icon: '🍦😢',
+                hint: 'A boy dropped his cold treat.',
+                words: ['I', 'am', 'sad', 'because', 'my', 'ice', 'cream', 'fell']
+            },
+            {
+                id: 'wt2',
+                icon: '🎂😄',
+                hint: 'Celebrating a special day with friends!',
+                words: ['I', 'feel', 'happy', 'because', 'today', 'is', 'my', 'birthday']
+            },
+            {
+                id: 'wt3',
+                icon: '☂️🌧️',
+                hint: 'Staying dry when water falls from the sky.',
+                words: ['She', 'took', 'an', 'umbrella', 'because', 'it', 'is', 'raining']
+            },
+            {
+                id: 'wt4',
+                icon: '👟⭐',
+                hint: 'Learning a new skill all on your own!',
+                words: ['I', 'am', 'proud', 'because', 'I', 'tied', 'my', 'shoes']
+            },
+            {
+                id: 'wt5',
+                icon: '📢🙉',
+                hint: 'Covering ears when a room is noisy.',
+                words: ['I', 'cover', 'my', 'ears', 'because', 'it', 'is', 'loud']
+            },
+            {
+                id: 'wt6',
+                icon: '🐕🥣',
+                hint: 'Why a puppy eats its dinner.',
+                words: ['The', 'dog', 'eats', 'food', 'because', 'he', 'is', 'hungry']
+            },
+            {
+                id: 'wt7',
+                icon: '🧱😠',
+                hint: 'When a tall block castle falls down.',
+                words: ['He', 'feels', 'mad', 'because', 'his', 'tower', 'broke']
+            },
+            {
+                id: 'wt8',
+                icon: '🧤❄️',
+                hint: 'Dressing warmly for snowy weather.',
+                words: ['I', 'wear', 'a', 'coat', 'because', 'it', 'is', 'cold']
+            },
+            {
+                id: 'wt9',
+                icon: '🥱🌙',
+                hint: 'Time to rest after a busy day.',
+                words: ['I', 'go', 'to', 'bed', 'because', 'I', 'am', 'tired']
+            },
+            {
+                id: 'wt10',
+                icon: '🤝💛',
+                hint: 'Being a kind friend at playtime.',
+                words: ['We', 'smile', 'together', 'because', 'we', 'share', 'toys']
+            },
+            {
+                id: 'wt11',
+                icon: '⚡😨',
+                hint: 'Hearing a big boom during a storm.',
+                words: ['I', 'feel', 'scared', 'because', 'thunder', 'is', 'loud']
+            },
+            {
+                id: 'wt12',
+                icon: '💧🌻',
+                hint: 'Helping a garden plant grow tall.',
+                words: ['We', 'water', 'plants', 'because', 'they', 'are', 'thirsty']
+            },
+            {
+                id: 'wt13',
+                icon: '🧩😤',
+                hint: 'When a game is tricky to solve.',
+                words: ['I', 'need', 'help', 'because', 'this', 'is', 'hard']
+            },
+            {
+                id: 'wt14',
+                icon: '🦁🎉',
+                hint: 'Going on a fun family trip!',
+                words: ['I', 'am', 'excited', 'because', 'we', 'see', 'lions']
+            }
+        ];
+
+        // MODE 4: "My Feelings" Helper Data (Calm-Down & Real-Life Expression Sandbox)
+        const MY_FEELINGS_EMOTIONS = [
+            { id: 'sad', label: 'Sad', color: 'btn-sky', bg: '#DBEAFE' },
+            { id: 'mad', label: 'Mad', color: 'btn-coral', bg: '#FEE2E2' },
+            { id: 'frustrated', label: 'Frustrated', color: 'btn-tangerine', bg: '#FFEDD5' },
+            { id: 'worried', label: 'Worried', color: 'btn-purple', bg: '#EDE9FE' },
+            { id: 'scared', label: 'Scared', color: 'btn-sky', bg: '#E0F2FE' },
+            { id: 'overwhelmed', label: 'Overwhelmed', color: 'btn-pink', bg: '#FCE7F3' },
+            { id: 'tired', label: 'Tired', color: 'btn-sunny', bg: '#E2E8F0' },
+            { id: 'happy', label: 'Happy', color: 'btn-mint', bg: '#D1FAE5' }
+        ];
+
+        const MY_FEELINGS_REASONS = [
+            { icon: '🧸', text: 'my toy broke or got lost' },
+            { icon: '📢', text: 'it is too loud in here' },
+            { icon: '💔', text: 'I miss someone I love' },
+            { icon: '🛑', text: 'someone took my turn' },
+            { icon: '🧩', text: 'this is really hard to do' },
+            { icon: '🍎', text: 'my tummy is hungry or thirsty' },
+            { icon: '🤕', text: 'I got hurt and need a hug' },
+            { icon: '⏰', text: 'I wanted to keep playing' },
+            { icon: '❓', text: 'I do not understand what to do' },
+            { icon: '💤', text: 'I need a quiet break' },
+            { icon: '⭐', text: 'I did a really great job' },
+            { icon: '🤝', text: 'I am having fun with my friend' }
+        ];
+
+        /* =========================================================================
+           4. APPLICATION STATE & UTILITY FUNCTIONS
+           ========================================================================= */
+        const State = {
+            currentView: 'home', // 'home', 'bridge', 'detective', 'train', 'helper'
+            stars: 0,
+            // Active Game Session State
+            queue: [],
+            currentIndex: 0,
+            currentOptions: [],
+            isAnswered: false,
+            // Word Train State
+            trainPool: [],
+            trainBuilt: [],
+            // My Feelings Helper State
+            selectedEmotion: null,
+            selectedReason: null
+        };
+
+        // Fisher-Yates strict randomization shuffle
+        function shuffleArray(arr) {
+            const copy = [...arr];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function addStars(count = 1) {
+            State.stars += count;
+            const starEl = document.getElementById('star-count');
+            if (starEl) {
+                starEl.textContent = State.stars;
+                starEl.parentElement.classList.add('animate-wiggle');
+                setTimeout(() => starEl.parentElement.classList.remove('animate-wiggle'), 600);
+            }
+            launchConfetti();
+        }
+
+        function showToast(emoji, message, borderColor = 'border-amber-400') {
+            const toast = document.getElementById('helper-toast');
+            const inner = document.getElementById('helper-toast-inner');
+            document.getElementById('toast-emoji').textContent = emoji;
+            document.getElementById('toast-text').textContent = message;
+            inner.className = `bg-white border-4 ${borderColor} border-b-8 rounded-3xl px-6 py-3 shadow-2xl flex items-center gap-3 max-w-md`;
+
+            toast.classList.remove('opacity-0', 'translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            clearTimeout(window._toastTimer);
+            window._toastTimer = setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-4');
+            }, 2600);
+        }
+
+        function launchConfetti() {
+            const colors = ['#FF5252', '#FFC107', '#10B981', '#2196F3', '#7C4DFF', '#EC4899'];
+            for (let i = 0; i < 28; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.left = (20 + Math.random() * 60) + 'vw';
+                piece.style.top = '35vh';
+                document.body.appendChild(piece);
+
+                const angle = (Math.random() * Math.PI * 2);
+                const velocity = 120 + Math.random() * 240;
+                const vx = Math.cos(angle) * velocity;
+                const vy = Math.sin(angle) * velocity - 150;
+
+                piece.animate([
+                    { transform: 'translate(0, 0) rotate(0deg) scale(1)', opacity: 1 },
+                    { transform: `translate(${vx}px, ${vy + 350}px) rotate(${360 + Math.random() * 360}deg) scale(0.4)`, opacity: 0 }
+                ], {
+                    duration: 950 + Math.random() * 450,
+                    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                }).onfinish = () => piece.remove();
+            }
+        }
+
+        function toggleAutoRead() {
+            AudioEngine.autoRead = !AudioEngine.autoRead;
+            AudioEngine.playPop();
+            const btn = document.getElementById('btn-autoread');
+            const icon = document.getElementById('autoread-icon');
+            const label = document.getElementById('autoread-label');
+            if (AudioEngine.autoRead) {
+                btn.className = 'btn-toy btn-mint px-3 sm:px-4 py-2 rounded-2xl font-bold text-sm sm:text-base flex items-center gap-1.5';
+                icon.textContent = '🗣️';
+                label.textContent = 'Auto-Read: ON';
+                AudioEngine.speak('Auto-read is on!');
+            } else {
+                btn.className = 'btn-toy btn-purple px-3 sm:px-4 py-2 rounded-2xl font-bold text-sm sm:text-base flex items-center gap-1.5';
+                icon.textContent = '🔇';
+                label.textContent = 'Auto-Read: OFF';
+            }
+        }
+
+        function toggleSfx() {
+            AudioEngine.sfxEnabled = !AudioEngine.sfxEnabled;
+            const icon = document.getElementById('sfx-icon');
+            icon.textContent = AudioEngine.sfxEnabled ? '🎵' : '🔕';
+            if (AudioEngine.sfxEnabled) AudioEngine.playPop();
+        }
+
+        /* =========================================================================
+           5. HOME GAME HUB VIEW
+           ========================================================================= */
+        function goHome() {
+            AudioEngine.playPop();
+            State.currentView = 'home';
+            const container = document.getElementById('app-container');
+            container.innerHTML = `
+                <div class="animate-pop space-y-6 py-2">
+                    <!-- Cheerful Welcome Banner -->
+                    <div class="card-3d border-amber-300 bg-gradient-to-r from-amber-50 via-white to-sky-50 p-5 sm:p-7 text-center relative overflow-hidden">
+                        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <div class="animate-float-1">
+                                ${getCharacterSVG('happy', '#FEF3C7')}
+                            </div>
+                            <div class="space-y-2 max-w-xl">
+                                <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-sky-700 tracking-tight">
+                                    WonderWords Playground!
+                                </h1>
+                                <p class="text-lg sm:text-xl font-bold text-slate-600">
+                                    Pick a fun game to practice sharing your feelings and solving stories!
+                                </p>
+                                <div class="pt-1">
+                                    <button onclick="AudioEngine.speak('Welcome to WonderWords Playground! Pick a fun game to play!')" class="btn-toy btn-sunny px-5 py-2 rounded-2xl font-display font-bold text-base inline-flex items-center gap-2">
+                                        <span>🔊</span> Hear Welcome
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4 Colorful Activity Cards Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <!-- Game 1: Because Bridge -->
+                        <div onclick="startBecauseBridge()" class="card-3d border-sky-300 hover:border-sky-400 p-5 sm:p-6 cursor-pointer transition-transform hover:-translate-y-1 flex flex-col justify-between bg-gradient-to-br from-white to-sky-50">
+                            <div class="flex items-start gap-4">
+                                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-sky-100 border-4 border-sky-300 flex items-center justify-center text-4xl sm:text-5xl shrink-0 shadow-sm">
+                                    🌉
+                                </div>
+                                <div class="space-y-1">
+                                    <span class="inline-block bg-sky-200 text-sky-800 text-xs font-extrabold px-3 py-0.5 rounded-full uppercase">16 Activities</span>
+                                    <h2 class="text-2xl sm:text-3xl font-extrabold text-sky-700">"Because" Bridge</h2>
+                                    <p class="text-slate-600 font-bold text-base">
+                                        Help characters finish their sentences! Match why they feel sad, mad, happy, or proud.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="mt-5 flex justify-end">
+                                <button class="btn-toy btn-sky w-full sm:w-auto px-6 py-3 rounded-2xl font-display font-bold text-lg flex items-center justify-center gap-2">
+                                    <span>Play "Because" Bridge</span> <span>▶️</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Game 2: Story Detective -->
+                        <div onclick="startStoryDetective()" class="card-3d border-purple-300 hover:border-purple-400 p-5 sm:p-6 cursor-pointer transition-transform hover:-translate-y-1 flex flex-col justify-between bg-gradient-to-br from-white to-purple-50">
+                            <div class="flex items-start gap-4">
+                                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-purple-100 border-4 border-purple-300 flex items-center justify-center text-4xl sm:text-5xl shrink-0 shadow-sm">
+                                    🕵️
+                                </div>
+                                <div class="space-y-1">
+                                    <span class="inline-block bg-purple-200 text-purple-800 text-xs font-extrabold px-3 py-0.5 rounded-full uppercase">15 Stories</span>
+                                    <h2 class="text-2xl sm:text-3xl font-extrabold text-purple-700">Story Detective</h2>
+                                    <p class="text-slate-600 font-bold text-base">
+                                        Read or listen to mini-stories and use picture clues to answer "Why?" questions!
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="mt-5 flex justify-end">
+                                <button class="btn-toy btn-purple w-full sm:w-auto px-6 py-3 rounded-2xl font-display font-bold text-lg flex items-center justify-center gap-2">
+                                    <span>Play Story Detective</span> <span>🔎</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Game 3: Word Train Builder -->
+                        <div onclick="startWordTrain()" class="card-3d border-emerald-300 hover:border-emerald-400 p-5 sm:p-6 cursor-pointer transition-transform hover:-translate-y-1 flex flex-col justify-between bg-gradient-to-br from-white to-emerald-50">
+                            <div class="flex items-start gap-4">
+                                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-emerald-100 border-4 border-emerald-300 flex items-center justify-center text-4xl sm:text-5xl shrink-0 shadow-sm">
+                                    🚂
+                                </div>
+                                <div class="space-y-1">
+                                    <span class="inline-block bg-emerald-200 text-emerald-800 text-xs font-extrabold px-3 py-0.5 rounded-full uppercase">14 Puzzles</span>
+                                    <h2 class="text-2xl sm:text-3xl font-extrabold text-emerald-700">Word Train Builder</h2>
+                                    <p class="text-slate-600 font-bold text-base">
+                                        Put mixed-up word cars in the right order to make a "because" train chug along!
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="mt-5 flex justify-end">
+                                <button class="btn-toy btn-mint w-full sm:w-auto px-6 py-3 rounded-2xl font-display font-bold text-lg flex items-center justify-center gap-2">
+                                    <span>Play Word Train</span> <span>🚃</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Game 4: My Feelings Helper -->
+                        <div onclick="startFeelingsHelper()" class="card-3d border-rose-300 hover:border-rose-400 p-5 sm:p-6 cursor-pointer transition-transform hover:-translate-y-1 flex flex-col justify-between bg-gradient-to-br from-white to-rose-50">
+                            <div class="flex items-start gap-4">
+                                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-rose-100 border-4 border-rose-300 flex items-center justify-center text-4xl sm:text-5xl shrink-0 shadow-sm">
+                                    💛
+                                </div>
+                                <div class="space-y-1">
+                                    <span class="inline-block bg-rose-200 text-rose-800 text-xs font-extrabold px-3 py-0.5 rounded-full uppercase">Real-Life Helper</span>
+                                    <h2 class="text-2xl sm:text-3xl font-extrabold text-rose-600">"My Feelings" Helper</h2>
+                                    <p class="text-slate-600 font-bold text-base">
+                                        Having big feelings right now? Pick how you feel and why, and I will speak it with you!
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="mt-5 flex justify-end">
+                                <button class="btn-toy btn-pink w-full sm:w-auto px-6 py-3 rounded-2xl font-display font-bold text-lg flex items-center justify-center gap-2">
+                                    <span>Open My Helper</span> <span>💬</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* =========================================================================
+           6. GAME 1: "BECAUSE" BRIDGE (Tap OR Drag-and-Drop Cause & Effect)
+           ========================================================================= */
+        function startBecauseBridge() {
+            AudioEngine.playPop();
+            State.currentView = 'bridge';
+            // Strictly randomize both question order and tile positions
+            State.queue = shuffleArray(BECAUSE_BRIDGE_DATA);
+            State.currentIndex = 0;
+            loadBridgeRound();
+        }
+
+        function loadBridgeRound() {
+            const item = State.queue[State.currentIndex];
+            State.isAnswered = false;
+
+            const allChoices = shuffleArray([
+                { ...item.correct, isCorrect: true },
+                ...item.distractors.map(d => ({ ...d, isCorrect: false }))
+            ]);
+            State.currentOptions = allChoices;
+
+            const tileStyles = ['btn-sky', 'btn-sunny', 'btn-purple'];
+            const floatClasses = ['animate-float-1', 'animate-float-2', 'animate-float-3'];
+
+            const container = document.getElementById('app-container');
+            container.innerHTML = `
+                <div class="animate-pop space-y-5">
+                    <!-- Header & Progress Bar -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 bg-white/80 rounded-3xl px-5 py-3 border-2 border-sky-200">
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">🌉</span>
+                            <h2 class="text-xl sm:text-2xl font-extrabold text-sky-700">"Because" Bridge</h2>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="font-bold text-slate-600 text-sm sm:text-base">Card ${State.currentIndex + 1} of ${State.queue.length}</span>
+                            <button onclick="reshuffleCurrentGame()" class="btn-toy btn-tangerine px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold" title="Shuffle new order">
+                                🔀 Shuffle
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Main Scene & Sentence Bridge Card -->
+                    <div class="card-3d border-sky-300 p-5 sm:p-8 bg-white">
+                        <div class="flex flex-col md:flex-row items-center gap-6">
+                            <!-- Expressive Character Avatar -->
+                            <div class="text-center shrink-0">
+                                ${getCharacterSVG(item.emotion, item.bgColor)}
+                                <span class="inline-block mt-2 px-4 py-1 rounded-full bg-slate-100 border-2 border-slate-200 font-display font-bold text-slate-700 capitalize text-base">
+                                    Feeling: ${item.emotionLabel}
+                                </span>
+                            </div>
+
+                            <!-- The Sentence Bridge -->
+                            <div class="flex-1 w-full space-y-4">
+                                <div class="flex flex-wrap items-center justify-between gap-2">
+                                    <p class="text-sm font-extrabold uppercase tracking-wider text-sky-600">
+                                        Tap or drag the matching tile onto the bridge!
+                                    </p>
+                                    <button onclick="speakBridgePrompt()" class="btn-toy btn-sunny px-4 py-2 rounded-2xl font-display font-bold text-sm sm:text-base flex items-center gap-2">
+                                        <span>🔊</span> Hear Sentence
+                                    </button>
+                                </div>
+
+                                <div class="flex flex-col lg:flex-row items-stretch lg:items-center gap-3 bg-sky-50/90 p-4 sm:p-5 rounded-3xl border-4 border-sky-200">
+                                    <!-- Left Side: Emotion Statement -->
+                                    <div class="bg-white border-4 border-sky-300 rounded-2xl px-5 py-4 shadow-sm flex items-center justify-center text-center">
+                                        <span class="font-display font-bold text-2xl sm:text-3xl text-slate-800">
+                                            "${item.promptPrefix}..."
+                                        </span>
+                                    </div>
+
+                                    <!-- Bridge Connector Icon -->
+                                    <div class="flex items-center justify-center text-3xl text-amber-500 font-black">
+                                        ➡️
+                                    </div>
+
+                                    <!-- Right Side: Drop / Tap Target Slot -->
+                                    <div id="bridge-drop-zone"
+                                         ondragover="handleBridgeDragOver(event)"
+                                         ondragleave="handleBridgeDragLeave(event)"
+                                         ondrop="handleBridgeDrop(event)"
+                                         class="bridge-slot flex-1 min-h-[86px] rounded-2xl px-5 py-4 flex items-center justify-center text-center">
+                                        <span id="bridge-slot-text" class="font-display font-bold text-xl sm:text-2xl text-sky-500">
+                                            [ Tap or Drop Reason Here ]
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Next Button Area (Reveals on Success) -->
+                        <div id="bridge-next-area" class="hidden mt-6 pt-4 border-t-2 border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <button onclick="speakCompletedBridge()" class="btn-toy btn-sky px-5 py-3 rounded-2xl font-display font-bold text-lg flex items-center gap-2">
+                                <span>🔊</span> Say Full Sentence Again
+                            </button>
+                            <button onclick="nextBridgeRound()" class="btn-toy btn-mint px-8 py-3.5 rounded-2xl font-display font-bold text-xl flex items-center gap-2">
+                                <span>Next Card</span> <span>➡️</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Floating Answer Tiles -->
+                    <div id="bridge-choices-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+                        ${allChoices.map((choice, idx) => `
+                            <div id="bridge-tile-${idx}"
+                                 draggable="true"
+                                 ondragstart="handleBridgeDragStart(event, ${idx})"
+                                 onclick="selectBridgeChoice(${idx})"
+                                 class="btn-toy ${tileStyles[idx % tileStyles.length]} ${floatClasses[idx % floatClasses.length]} rounded-3xl p-4 sm:p-5 flex flex-col items-center justify-between text-center gap-3">
+                                <div class="w-full flex justify-end">
+                                    <button type="button"
+                                            onclick="event.stopPropagation(); AudioEngine.speak('${choice.text.replace(/'/g, "\\'")}')"
+                                            class="bg-white/30 hover:bg-white/50 rounded-full w-9 h-9 flex items-center justify-center text-lg"
+                                            title="Listen to this tile">
+                                        🔊
+                                    </button>
+                                </div>
+                                <div class="text-5xl sm:text-6xl drop-shadow-sm">${choice.icon}</div>
+                                <p class="font-display font-bold text-lg sm:text-xl leading-snug">
+                                    "${choice.text}"
+                                </p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            if (AudioEngine.autoRead) {
+                setTimeout(() => speakBridgePrompt(), 350);
+            }
+        }
+
+        function speakBridgePrompt() {
+            const item = State.queue[State.currentIndex];
+            if (State.isAnswered) {
+                speakCompletedBridge();
+            } else {
+                AudioEngine.speak(`${item.promptPrefix}... hmm, why? Pick the matching picture!`);
+            }
+        }
+
+        function speakCompletedBridge() {
+            const item = State.queue[State.currentIndex];
+            AudioEngine.speak(`${item.promptPrefix} ${item.correct.text}!`);
+        }
+
+        // Drag & Drop handlers for "Because" Bridge
+        function handleBridgeDragStart(e, idx) {
+            e.dataTransfer.setData('text/plain', idx.toString());
+        }
+        function handleBridgeDragOver(e) {
+            e.preventDefault();
+            if (!State.isAnswered) {
+                document.getElementById('bridge-drop-zone').classList.add('drag-over');
+            }
+        }
+        function handleBridgeDragLeave(e) {
+            document.getElementById('bridge-drop-zone').classList.remove('drag-over');
+        }
+        function handleBridgeDrop(e) {
+            e.preventDefault();
+            document.getElementById('bridge-drop-zone').classList.remove('drag-over');
+            const idx = parseInt(e.dataTransfer.getData('text/plain'), 10);
+            if (!isNaN(idx)) {
+                selectBridgeChoice(idx);
+            }
+        }
+
+        function selectBridgeChoice(idx) {
+            if (State.isAnswered) return;
+            const choice = State.currentOptions[idx];
+            const item = State.queue[State.currentIndex];
+            const tileEl = document.getElementById(`bridge-tile-${idx}`);
+
+            if (choice.isCorrect) {
+                State.isAnswered = true;
+                AudioEngine.playSuccess();
+                addStars(1);
+
+                const dropZone = document.getElementById('bridge-drop-zone');
+                dropZone.classList.add('filled', 'animate-rainbow');
+                document.getElementById('bridge-slot-text').innerHTML = `
+                    <span class="flex items-center justify-center gap-3 text-emerald-800">
+                        <span class="text-4xl">${choice.icon}</span>
+                        <span>"${choice.text}!"</span>
+                    </span>
+                `;
+
+                // Hide tiles gently and reveal Next button
+                document.getElementById('bridge-choices-grid').classList.add('opacity-40', 'pointer-events-none');
+                document.getElementById('bridge-next-area').classList.remove('hidden');
+
+                showToast('🌈', 'Awesome! You built the whole sentence!', 'border-emerald-400');
+                AudioEngine.speak(`Yes! ${item.promptPrefix} ${choice.text}!`);
+            } else {
+                AudioEngine.playGentleTryAgain();
+                tileEl.classList.add('animate-wiggle', 'opacity-60');
+                setTimeout(() => tileEl.classList.remove('animate-wiggle'), 550);
+                showToast('🤔', 'Good try! Look at the face and try another clue.', 'border-amber-400');
+                AudioEngine.speak(`Hmm, let's check the face again. Why do they feel ${item.emotionLabel}?`);
+            }
+        }
+
+        function nextBridgeRound() {
+            AudioEngine.playPop();
+            State.currentIndex++;
+            if (State.currentIndex >= State.queue.length) {
+                State.queue = shuffleArray(BECAUSE_BRIDGE_DATA);
+                State.currentIndex = 0;
+                showToast('🎉', 'You finished all cards! Shuffling a fresh round!', 'border-purple-400');
+            }
+            loadBridgeRound();
+        }
+
+        /* =========================================================================
+           7. GAME 2: STORY DETECTIVE (Reading with Understanding)
+           ========================================================================= */
+        function startStoryDetective() {
+            AudioEngine.playPop();
+            State.currentView = 'detective';
+            State.queue = shuffleArray(STORY_DETECTIVE_DATA);
+            State.currentIndex = 0;
+            loadDetectiveRound();
+        }
+
+        function loadDetectiveRound() {
+            const storyObj = State.queue[State.currentIndex];
+            State.isAnswered = false;
+
+            const choices = shuffleArray([
+                { ...storyObj.correct, isCorrect: true },
+                ...storyObj.distractors.map(d => ({ ...d, isCorrect: false }))
+            ]);
+            State.currentOptions = choices;
+
+            const btnColors = ['btn-purple', 'btn-sky', 'btn-tangerine'];
+
+            const container = document.getElementById('app-container');
+            container.innerHTML = `
+                <div class="animate-pop space-y-5">
+                    <!-- Header -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 bg-white/80 rounded-3xl px-5 py-3 border-2 border-purple-200">
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">🕵️</span>
+                            <h2 class="text-xl sm:text-2xl font-extrabold text-purple-700">Story Detective</h2>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="font-bold text-slate-600 text-sm sm:text-base">Story ${State.currentIndex + 1} of ${State.queue.length}</span>
+                            <button onclick="reshuffleCurrentGame()" class="btn-toy btn-sunny px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold">
+                                🔀 Shuffle
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mini-Story Book Card -->
+                    <div class="card-3d border-purple-300 p-5 sm:p-7 bg-gradient-to-br from-white via-purple-50/40 to-amber-50/40">
+                        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                            <div class="flex items-center gap-3">
+                                <span class="text-3xl sm:text-4xl bg-purple-100 border-2 border-purple-300 px-3 py-1.5 rounded-2xl">
+                                    ${storyObj.sceneIcon}
+                                </span>
+                                <h3 class="text-2xl sm:text-3xl font-extrabold text-purple-800">
+                                    ${storyObj.title}
+                                </h3>
+                            </div>
+                            <button onclick="speakDetectiveStory()" class="btn-toy btn-sunny px-5 py-2.5 rounded-2xl font-display font-bold text-base sm:text-lg flex items-center gap-2">
+                                <span>🔊</span> Read Story to Me
+                            </button>
+                        </div>
+
+                        <!-- Large, Clear 6-Year-Old Friendly Story Text -->
+                        <div class="bg-white border-4 border-purple-200 rounded-3xl p-5 sm:p-6 shadow-inner">
+                            <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-800 leading-relaxed tracking-wide">
+                                ${storyObj.story}
+                            </p>
+                        </div>
+
+                        <!-- Detective Question Banner -->
+                        <div class="mt-5 bg-amber-100 border-4 border-amber-300 rounded-2xl px-5 py-3.5 flex flex-wrap items-center justify-between gap-3">
+                            <div class="flex items-center gap-3">
+                                <span class="text-3xl">🔎</span>
+                                <p class="font-display font-bold text-xl sm:text-2xl text-amber-900">
+                                    ${storyObj.question}
+                                </p>
+                            </div>
+                            <button onclick="AudioEngine.speak('${storyObj.question.replace(/'/g, "\\'")}')" class="btn-toy btn-tangerine px-3.5 py-1.5 rounded-xl font-bold text-sm flex items-center gap-1">
+                                <span>🔊</span> Question
+                            </button>
+                        </div>
+
+                        <!-- Next Story Button (Hidden until solved) -->
+                        <div id="detective-next-area" class="hidden mt-5 pt-4 border-t-2 border-purple-100 flex justify-end">
+                            <button onclick="nextDetectiveRound()" class="btn-toy btn-mint px-8 py-3.5 rounded-2xl font-display font-bold text-xl flex items-center gap-2">
+                                <span>Next Story</span> <span>➡️</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 3 Picture + "Because" Answer Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        ${choices.map((c, idx) => `
+                            <button id="detective-choice-${idx}"
+                                    onclick="selectDetectiveChoice(${idx})"
+                                    class="btn-toy ${btnColors[idx % btnColors.length]} rounded-3xl p-5 flex flex-col items-center justify-between text-center gap-3">
+                                <div class="w-full flex justify-end">
+                                    <span onclick="event.stopPropagation(); AudioEngine.speak('${c.text.replace(/'/g, "\\'")}')"
+                                          class="bg-white/30 hover:bg-white/50 rounded-full w-9 h-9 flex items-center justify-center text-lg">
+                                        🔊
+                                    </span>
+                                </div>
+                                <div class="text-5xl">${c.icon}</div>
+                                <p class="font-display font-bold text-lg sm:text-xl leading-snug">
+                                    ${c.text}
+                                </p>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            if (AudioEngine.autoRead) {
+                setTimeout(() => speakDetectiveStory(), 350);
+            }
+        }
+
+        function speakDetectiveStory() {
+            const s = State.queue[State.currentIndex];
+            AudioEngine.speak(`${s.title}. ${s.story} ... ${s.question}`);
+        }
+
+        function selectDetectiveChoice(idx) {
+            if (State.isAnswered) return;
+            const choice = State.currentOptions[idx];
+            const btn = document.getElementById(`detective-choice-${idx}`);
+
+            if (choice.isCorrect) {
+                State.isAnswered = true;
+                AudioEngine.playSuccess();
+                addStars(1);
+
+                btn.className = 'btn-toy btn-mint animate-rainbow rounded-3xl p-5 flex flex-col items-center justify-between text-center gap-3 scale-105';
+                document.getElementById('detective-next-area').classList.remove('hidden');
+
+                showToast('🕵️', 'Super Detective! You found the story clue!', 'border-emerald-400');
+                AudioEngine.speak(`Great detective work! ${choice.text}!`);
+            } else {
+                AudioEngine.playGentleTryAgain();
+                btn.classList.add('animate-wiggle', 'opacity-60');
+                setTimeout(() => btn.classList.remove('animate-wiggle'), 550);
+                showToast('📖', 'Read the story clues again and give it another try!', 'border-amber-400');
+                AudioEngine.speak('Not quite! Listen to the story clues again and try another card.');
+            }
+        }
+
+        function nextDetectiveRound() {
+            AudioEngine.playPop();
+            State.currentIndex++;
+            if (State.currentIndex >= State.queue.length) {
+                State.queue = shuffleArray(STORY_DETECTIVE_DATA);
+                State.currentIndex = 0;
+                showToast('🎉', 'All stories solved! Starting a newly shuffled set!', 'border-purple-400');
+            }
+            loadDetectiveRound();
+        }
+
+        /* =========================================================================
+           8. GAME 3: WORD TRAIN BUILDER (Sentence Comprehension & Ordering)
+           ========================================================================= */
+        function startWordTrain() {
+            AudioEngine.playPop();
+            State.currentView = 'train';
+            State.queue = shuffleArray(WORD_TRAIN_DATA);
+            State.currentIndex = 0;
+            loadTrainRound();
+        }
+
+        function loadTrainRound() {
+            const puzzle = State.queue[State.currentIndex];
+            State.isAnswered = false;
+            State.trainBuilt = [];
+
+            // Shuffle words so they are guaranteed not to be in already-solved order
+            let scrambled = shuffleArray(puzzle.words.map((w, i) => ({ id: i, word: w })));
+            if (scrambled.map(x => x.word).join(' ') === puzzle.words.join(' ')) {
+                scrambled.reverse();
+            }
+            State.trainPool = scrambled;
+
+            renderTrainBoard();
+
+            if (AudioEngine.autoRead) {
+                setTimeout(() => {
+                    AudioEngine.speak(`Build the sentence! Hint: ${puzzle.hint}`);
+                }, 350);
+            }
+        }
+
+        function renderTrainBoard() {
+            const puzzle = State.queue[State.currentIndex];
+            const carColors = ['btn-sky', 'btn-sunny', 'btn-coral', 'btn-purple', 'btn-tangerine', 'btn-pink'];
+
+            const container = document.getElementById('app-container');
+            container.innerHTML = `
+                <div class="animate-pop space-y-5">
+                    <!-- Header -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 bg-white/80 rounded-3xl px-5 py-3 border-2 border-emerald-200">
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">🚂</span>
+                            <h2 class="text-xl sm:text-2xl font-extrabold text-emerald-700">Word Train Builder</h2>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="font-bold text-slate-600 text-sm sm:text-base">Train ${State.currentIndex + 1} of ${State.queue.length}</span>
+                            <button onclick="reshuffleCurrentGame()" class="btn-toy btn-tangerine px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold">
+                                🔀 Shuffle
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Train Track Card -->
+                    <div class="card-3d border-emerald-300 p-5 sm:p-7 bg-gradient-to-b from-sky-50 to-emerald-50/60">
+                        <!-- Clue Header -->
+                        <div class="flex flex-wrap items-center justify-between gap-3 mb-5 bg-white border-2 border-emerald-200 rounded-2xl px-4 py-3">
+                            <div class="flex items-center gap-3">
+                                <span class="text-4xl">${puzzle.icon}</span>
+                                <div>
+                                    <span class="text-xs font-extrabold uppercase text-emerald-600">Picture Clue</span>
+                                    <p class="font-display font-bold text-lg sm:text-xl text-slate-800">${puzzle.hint}</p>
+                                </div>
+                            </div>
+                            <button onclick="AudioEngine.speak('${puzzle.words.join(' ').replace(/'/g, "\\'")}')" class="btn-toy btn-sunny px-4 py-2 rounded-2xl font-display font-bold text-sm sm:text-base flex items-center gap-2">
+                                <span>🔊</span> Hear Target Sentence
+                            </button>
+                        </div>
+
+                        <!-- The Train Engine + Built Word Cars -->
+                        <div class="bg-white border-4 border-emerald-300 rounded-3xl p-4 sm:p-6 min-h-[130px] flex flex-wrap items-center gap-2.5 shadow-inner relative">
+                            <!-- Cute Train Engine -->
+                            <div class="${State.isAnswered ? 'animate-chug' : ''} bg-rose-500 border-4 border-rose-700 text-white rounded-2xl px-4 py-3 font-display font-extrabold text-2xl flex items-center gap-2 shadow-md">
+                                <span>🚂</span>
+                            </div>
+
+                            <!-- Placed Word Cars -->
+                            ${State.trainBuilt.length === 0 ? `
+                                <span class="font-display font-bold text-lg sm:text-xl text-slate-400 pl-2">
+                                    Tap the floating word cars below in order!
+                                </span>
+                            ` : State.trainBuilt.map((item, idx) => `
+                                <button onclick="removeWordFromTrain(${idx})"
+                                        class="btn-toy ${item.word.toLowerCase() === 'because' ? 'btn-sunny' : 'btn-mint'} px-4 py-2.5 rounded-2xl font-display font-extrabold text-xl sm:text-2xl flex items-center gap-1"
+                                        title="Tap to put back">
+                                    <span>${item.word}</span>
+                                </button>
+                            `).join('')}
+                        </div>
+
+                        <!-- Next Train Button (Shown when sentence is complete) -->
+                        ${State.isAnswered ? `
+                            <div class="mt-5 pt-4 border-t-2 border-emerald-200 flex flex-wrap items-center justify-between gap-3">
+                                <button onclick="AudioEngine.speak('${puzzle.words.join(' ').replace(/'/g, "\\'")}')" class="btn-toy btn-sky px-5 py-3 rounded-2xl font-display font-bold text-lg flex items-center gap-2">
+                                    <span>🔊</span> Listen Again
+                                </button>
+                                <button onclick="nextTrainRound()" class="btn-toy btn-mint px-8 py-3.5 rounded-2xl font-display font-bold text-xl flex items-center gap-2">
+                                    <span>Next Train</span> <span>➡️</span>
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <!-- Floating Word Pool -->
+                    ${!State.isAnswered ? `
+                        <div class="bg-white/90 border-4 border-sky-200 rounded-3xl p-5 flex flex-wrap items-center justify-center gap-3">
+                            ${State.trainPool.map((item, idx) => `
+                                <button onclick="addWordToTrain(${idx})"
+                                        class="btn-toy ${item.word.toLowerCase() === 'because' ? 'btn-sunny' : carColors[idx % carColors.length]} px-5 py-3 rounded-2xl font-display font-extrabold text-xl sm:text-2xl">
+                                    ${item.word}
+                                </button>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function addWordToTrain(poolIdx) {
+            if (State.isAnswered) return;
+            const chosen = State.trainPool.splice(poolIdx, 1)[0];
+            State.trainBuilt.push(chosen);
+            AudioEngine.playPop();
+            AudioEngine.speak(chosen.word);
+
+            const puzzle = State.queue[State.currentIndex];
+            if (State.trainBuilt.length === puzzle.words.length) {
+                const builtSentence = State.trainBuilt.map(x => x.word).join(' ');
+                const targetSentence = puzzle.words.join(' ');
+                if (builtSentence === targetSentence) {
+                    State.isAnswered = true;
+                    AudioEngine.playSuccess();
+                    addStars(1);
+                    showToast('🚂', 'Choo-choo! Perfect sentence train!', 'border-emerald-400');
+                    setTimeout(() => AudioEngine.speak(`Choo choo! ${targetSentence}!`), 350);
+                } else {
+                    AudioEngine.playGentleTryAgain();
+                    showToast('🔄', 'Almost! Tap a word on the train to swap its spot.', 'border-amber-400');
+                    setTimeout(() => AudioEngine.speak('Almost! Let us check the word order.'), 300);
+                }
+            }
+            renderTrainBoard();
+        }
+
+        function removeWordFromTrain(builtIdx) {
+            if (State.isAnswered) return;
+            const removed = State.trainBuilt.splice(builtIdx, 1)[0];
+            State.trainPool.push(removed);
+            AudioEngine.playPop();
+            renderTrainBoard();
+        }
+
+        function nextTrainRound() {
+            AudioEngine.playPop();
+            State.currentIndex++;
+            if (State.currentIndex >= State.queue.length) {
+                State.queue = shuffleArray(WORD_TRAIN_DATA);
+                State.currentIndex = 0;
+                showToast('🎉', 'You built every train! Starting a new shuffled set!', 'border-emerald-400');
+            }
+            loadTrainRound();
+        }
+
+        /* =========================================================================
+           9. GAME 4: "MY FEELINGS" HELPER (Real-Life Calm-Down & Expression Sandbox)
+           ========================================================================= */
+        function startFeelingsHelper() {
+            AudioEngine.playPop();
+            State.currentView = 'helper';
+            State.selectedEmotion = MY_FEELINGS_EMOTIONS[0];
+            State.selectedReason = null;
+            renderFeelingsHelper();
+
+            if (AudioEngine.autoRead) {
+                setTimeout(() => {
+                    AudioEngine.speak('How do you feel right now? Tap a face, then tap why!');
+                }, 350);
+            }
+        }
+
+        function renderFeelingsHelper() {
+            const em = State.selectedEmotion;
+            const reason = State.selectedReason;
+            const fullSentence = reason
+                ? `I feel ${em.label.toLowerCase()} because ${reason}.`
+                : `I feel ${em.label.toLowerCase()} because...`;
+
+            const container = document.getElementById('app-container');
+            container.innerHTML = `
+                <div class="animate-pop space-y-5">
+                    <!-- Header -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 bg-white/85 rounded-3xl px-5 py-3 border-2 border-rose-200">
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">💛</span>
+                            <h2 class="text-xl sm:text-2xl font-extrabold text-rose-600">"My Feelings" Helper</h2>
+                        </div>
+                        <span class="text-sm font-bold text-slate-600">No wrong answers — share what is on your mind!</span>
+                    </div>
+
+                    <!-- Giant Glowing Sentence Speaker Card -->
+                    <div class="card-3d border-rose-300 p-5 sm:p-6 bg-gradient-to-r from-rose-50 via-white to-amber-50">
+                        <div class="flex flex-col sm:flex-row items-center gap-5">
+                            <div class="shrink-0">
+                                ${getCharacterSVG(em.id, em.bg)}
+                            </div>
+                            <div class="flex-1 text-center sm:text-left space-y-3">
+                                <span class="inline-block bg-rose-100 text-rose-700 text-xs font-extrabold uppercase px-3 py-1 rounded-full">
+                                    My Voice Card
+                                </span>
+                                <p class="font-display font-extrabold text-2xl sm:text-3xl md:text-4xl text-slate-800 leading-snug">
+                                    "${fullSentence}"
+                                </p>
+                                <div class="flex flex-wrap justify-center sm:justify-start gap-3 pt-1">
+                                    <button onclick="AudioEngine.speak('${fullSentence.replace(/'/g, "\\'")}')"
+                                            class="btn-toy btn-mint px-6 py-3 rounded-2xl font-display font-bold text-lg flex items-center gap-2">
+                                        <span>🔊</span> Speak My Sentence
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 1: Choose Emotion -->
+                    <div class="card-3d border-sky-200 p-5 space-y-3">
+                        <h3 class="text-xl font-extrabold text-sky-800 flex items-center gap-2">
+                            <span class="bg-sky-200 text-sky-900 w-8 h-8 rounded-full inline-flex items-center justify-center text-base">1</span>
+                            How do I feel right now?
+                        </h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            ${MY_FEELINGS_EMOTIONS.map(item => `
+                                <button onclick="pickHelperEmotion('${item.id}')"
+                                        class="btn-toy ${item.color} ${em.id === item.id ? 'ring-4 ring-amber-400 scale-105' : 'opacity-90'} rounded-2xl py-3 px-3 font-display font-bold text-lg flex items-center justify-center gap-2">
+                                    <span>${item.label}</span>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Choose Reason or Type Custom Reason -->
+                    <div class="card-3d border-amber-200 p-5 space-y-4">
+                        <h3 class="text-xl font-extrabold text-amber-800 flex items-center gap-2">
+                            <span class="bg-amber-200 text-amber-900 w-8 h-8 rounded-full inline-flex items-center justify-center text-base">2</span>
+                            Because... (Pick a picture or type your own!)
+                        </h3>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                            ${MY_FEELINGS_REASONS.map(r => `
+                                <button onclick="pickHelperReason('${r.text.replace(/'/g, "\\'")}')"
+                                        class="btn-toy ${reason === r.text ? 'btn-mint ring-4 ring-emerald-300' : 'btn-sunny'} rounded-2xl p-3.5 flex items-center gap-3 text-left">
+                                    <span class="text-3xl shrink-0">${r.icon}</span>
+                                    <span class="font-display font-bold text-base sm:text-lg leading-tight">${r.text}</span>
+                                </button>
+                            `).join('')}
+                        </div>
+
+                        <!-- Custom Parent/Kid Input Bar -->
+                        <div class="pt-2 flex flex-col sm:flex-row gap-3">
+                            <input id="custom-reason-input"
+                                   type="text"
+                                   placeholder="Or type your own reason here..."
+                                   class="flex-1 rounded-2xl border-4 border-sky-200 focus:border-sky-400 outline-none px-4 py-3 font-bold text-lg text-slate-800 bg-sky-50/50"
+                                   onkeydown="if(event.key==='Enter') applyCustomReason()"/>
+                            <button onclick="applyCustomReason()" class="btn-toy btn-purple px-6 py-3 rounded-2xl font-display font-bold text-lg flex items-center justify-center gap-2">
+                                <span>✨</span> Use My Words
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function pickHelperEmotion(emotionId) {
+            const found = MY_FEELINGS_EMOTIONS.find(e => e.id === emotionId);
+            if (!found) return;
+            State.selectedEmotion = found;
+            AudioEngine.playPop();
+            renderFeelingsHelper();
+            const phrase = State.selectedReason
+                ? `I feel ${found.label.toLowerCase()} because ${State.selectedReason}.`
+                : `I feel ${found.label.toLowerCase()}. Now pick why!`;
+            AudioEngine.speak(phrase);
+        }
+
+        function pickHelperReason(reasonText) {
+            State.selectedReason = reasonText;
+            AudioEngine.playSuccess();
+            renderFeelingsHelper();
+            const full = `I feel ${State.selectedEmotion.label.toLowerCase()} because ${reasonText}.`;
+            showToast('💬', 'Great job explaining your feelings!', 'border-rose-400');
+            AudioEngine.speak(full);
+        }
+
+        function applyCustomReason() {
+            const input = document.getElementById('custom-reason-input');
+            if (!input) return;
+            const val = input.value.trim().replace(/^because\s+/i, '');
+            if (!val) return;
+            pickHelperReason(val);
+        }
+
+        /* =========================================================================
+           10. SHARED RESHUFFLE & INITIALIZATION
+           ========================================================================= */
+        function reshuffleCurrentGame() {
+            AudioEngine.playPop();
+            showToast('🔀', 'Shuffled! Fresh cards and mixed-up positions!', 'border-sky-400');
+            if (State.currentView === 'bridge') {
+                State.queue = shuffleArray(BECAUSE_BRIDGE_DATA);
+                State.currentIndex = 0;
+                loadBridgeRound();
+            } else if (State.currentView === 'detective') {
+                State.queue = shuffleArray(STORY_DETECTIVE_DATA);
+                State.currentIndex = 0;
+                loadDetectiveRound();
+            } else if (State.currentView === 'train') {
+                State.queue = shuffleArray(WORD_TRAIN_DATA);
+                State.currentIndex = 0;
+                loadTrainRound();
+            }
+        }
+
+        window.onload = function() {
+            AudioEngine.init();
+            goHome();
+        };
+    </script>
+</body>
+  </html>
